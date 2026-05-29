@@ -791,6 +791,107 @@
     /* Hero is hidden — stat elements kept in DOM for updateStats compatibility */
     .hero { display: none !important; }
 
+    /* ── Category group headers in library ── */
+    .library-section-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ios-label-2);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 20px 0 6px;
+    }
+    .library-section-label:first-child { padding-top: 4px; }
+    .library-group { margin-bottom: 4px; }
+
+    /* Entry chevron for navigation */
+    .entry-chevron {
+      color: var(--ios-label-3);
+      font-size: 12px;
+      flex-shrink: 0;
+      margin-left: 4px;
+    }
+
+    /* ── Detail overlay — slides in from right ── */
+    .detail-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--ios-bg);
+      z-index: 50;
+      transform: translateX(100%);
+      transition: transform 280ms var(--ease-out-expo);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: calc(44px + env(safe-area-inset-top)) 20px calc(60px + env(safe-area-inset-bottom));
+    }
+    .detail-overlay.is-open {
+      transform: translateX(0);
+    }
+    .detail-content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Detail view nav bar state — back button */
+    .nav-back {
+      display: none;
+      align-items: center;
+      gap: 4px;
+      position: absolute;
+      left: 16px;
+      bottom: 0;
+      height: 44px;
+      font-size: 17px;
+      color: var(--accent);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+    }
+    .nav-bar.detail-mode .nav-back { display: flex; }
+    .nav-bar.detail-mode .nav-title { opacity: 0.4; }
+
+    /* Detail content styles */
+    .detail-category-badge {
+      display: inline-flex;
+      align-items: center;
+      background: var(--accent-fill);
+      color: var(--accent);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .detail-turkish {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--ios-label);
+      margin-bottom: 6px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    }
+    .detail-german {
+      font-size: 17px;
+      color: var(--ios-label-2);
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+    .detail-note {
+      font-size: 15px;
+      color: var(--ios-label-2);
+      background: var(--ios-fill);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .detail-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     /* ── Practice Screen ── */
     .practice-status { text-align: center; padding: 32px 0 24px; }
     .practice-due-count { font-size: 64px; font-weight: 700; line-height: 1; color: var(--accent); letter-spacing: -0.04em; font-family: -apple-system, sans-serif; }
@@ -840,7 +941,8 @@
   </style>
 </head>
 <body>
-  <nav class="nav-bar">
+  <nav class="nav-bar" id="navBar">
+    <button class="nav-back" id="navBackBtn">‹ Sätze</button>
     <span class="nav-title" id="navTitle">Üben</span>
   </nav>
   <div class="wrap">
@@ -943,19 +1045,14 @@
     <section class="panel" id="library">
       <div class="panel-title">
         <h2>Sätze</h2>
-        <p>Deine Kernbausteine für Familie, Tisch, Wünsche und kleine echte Gespräche.</p>
       </div>
-      <div class="grid">
-        <div class="card">
-          <h3>Deine Kernsätze</h3>
-          <div class="list" id="sentenceList"></div>
-        </div>
-        <div class="card">
-          <h3>Wortbank</h3>
-          <div class="list" id="wordList"></div>
-        </div>
-      </div>
+      <div id="libraryList"></div>
     </section>
+  </div>
+
+  <!-- Detail view — slides in over everything -->
+  <div class="detail-overlay" id="detailOverlay">
+    <div class="detail-content" id="detailContent"></div>
   </div>
 
   <script>
@@ -1713,32 +1810,102 @@
     }
 
     function renderLibrary() {
-      const sentenceList = document.getElementById('sentenceList');
-      const wordList = document.getElementById('wordList');
-      sentenceList.innerHTML = '';
-      wordList.innerHTML = '';
+      const container = document.getElementById('libraryList');
+      if (!container) return;
+      container.innerHTML = '';
 
-      const makeEntry = (item, list) => {
-        const el = document.createElement('div');
-        el.className = 'entry';
-        el.innerHTML = `<div class="entry-body"><strong>${item.tr}</strong><small>${item.de} · ${item.category}</small></div>`;
-        const btn = document.createElement('button');
-        btn.className = 'entry-play';
-        btn.textContent = '🔊';
-        btn.setAttribute('aria-label', 'Anhören');
-        btn.onclick = () => speakTurkish(item.tr);
-        el.appendChild(btn);
-        list.appendChild(el);
+      // Group all content by category
+      const groups = {};
+      CONTENT.forEach(item => {
+        if (!groups[item.category]) groups[item.category] = [];
+        groups[item.category].push(item);
+      });
+
+      Object.keys(groups).sort().forEach(category => {
+        const label = document.createElement('div');
+        label.className = 'library-section-label';
+        label.textContent = category;
+        container.appendChild(label);
+
+        const group = document.createElement('div');
+        group.className = 'library-group';
+        container.appendChild(group);
+
+        groups[category].forEach(item => {
+          const el = document.createElement('div');
+          el.className = 'entry';
+          el.style.cursor = 'pointer';
+          el.innerHTML = `
+            <div class="entry-body">
+              <strong>${item.tr}</strong>
+              <small>${item.de}</small>
+            </div>
+            <span class="entry-chevron">›</span>`;
+          el.addEventListener('click', () => openDetail(item));
+          group.appendChild(el);
+        });
+      });
+    }
+
+    function openDetail(item) {
+      const overlay = document.getElementById('detailOverlay');
+      const content = document.getElementById('detailContent');
+      const stats = getCardStats(item.id);
+
+      content.innerHTML = `
+        <div style="margin-bottom:24px;">
+          <span class="detail-category-badge">${item.category} · ${item.type === 'satz' ? 'Satz' : 'Wort'}</span>
+        </div>
+        <div class="detail-turkish">${item.tr}</div>
+        <div class="detail-german">${item.de}</div>
+        ${item.note ? `<div class="detail-note">${item.note}</div>` : ''}
+        <div class="detail-actions">
+          <button class="btn btn-ghost ghost" id="detailSpeakBtn" style="flex:1;">🔊 Anhören</button>
+          <button class="btn btn-primary primary" id="detailPracticeBtn" style="flex:2;">⚡ Üben</button>
+        </div>
+        <div style="margin-top:24px; padding-top:16px; border-top:0.5px solid var(--ios-sep);">
+          <div style="font-size:13px; color:var(--ios-label-2); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.04em; font-weight:600;">Dein Stand</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+            <div class="stat-chip"><div class="stat-val">${stats.correct || 0}</div><div class="stat-key">Richtig</div></div>
+            <div class="stat-chip"><div class="stat-val">${stats.wrong || 0}</div><div class="stat-key">Falsch</div></div>
+            <div class="stat-chip"><div class="stat-val">${stats.streak || 0}</div><div class="stat-key">Streak</div></div>
+          </div>
+        </div>`;
+
+      overlay.classList.add('is-open');
+      document.getElementById('navBar').classList.add('detail-mode');
+      document.getElementById('navTitle').textContent = item.category;
+
+      document.getElementById('detailSpeakBtn').onclick = () => speakTurkish(item.tr);
+      document.getElementById('detailPracticeBtn').onclick = () => {
+        closeDetail();
+        // Queue this specific card for immediate practice
+        practiceQueue = [item];
+        practiceTotal = 1;
+        practiceIdx = 0;
+        openTab('practice');
+        document.getElementById('practiceHome').style.display = 'none';
+        document.getElementById('practiceActive').style.display = '';
+        document.getElementById('practiceDone').style.display = 'none';
+        showNextPracticeCard();
       };
 
-      CONTENT.filter(item => item.type === 'satz').forEach(item => makeEntry(item, sentenceList));
-      CONTENT.filter(item => item.type === 'wort').forEach(item => makeEntry(item, wordList));
+      speakTurkish(item.tr);
+    }
+
+    function closeDetail() {
+      document.getElementById('detailOverlay').classList.remove('is-open');
+      document.getElementById('navBar').classList.remove('detail-mode');
+      document.getElementById('navTitle').textContent = NAV_TITLES['library'] || 'Sätze';
     }
 
     // Tab navigation
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', () => openTab(tab.dataset.tab));
     });
+
+    // Detail back button
+    document.getElementById('navBackBtn').addEventListener('click', closeDetail);
 
     // Practice flow
     document.getElementById('practiceRevealBtn').addEventListener('click', showPracticeAnswer);
