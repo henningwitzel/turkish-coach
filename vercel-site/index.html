@@ -213,12 +213,10 @@
 
     .panel {
       display: none;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 22px;
-      backdrop-filter: blur(14px);
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      padding: 0;
     }
 
     .panel.active { display: block; }
@@ -245,10 +243,15 @@
     }
 
     .card {
-      background: var(--panel-strong);
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      padding: 18px;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+      padding: 20px 0;
+    }
+
+    .card + .card {
+      border-top: 1px solid var(--line);
     }
 
     .card h3 {
@@ -265,6 +268,9 @@
       justify-content: space-between;
       gap: 16px;
       background: var(--flashcard-grad);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 4px 24px rgba(131,70,34,0.10);
     }
 
     .tag-row, .category-row {
@@ -437,10 +443,9 @@
 
     .list {
       display: grid;
-      gap: 12px;
+      gap: 0;
       max-height: 620px;
       overflow: auto;
-      padding-right: 4px;
     }
 
     .today-stack {
@@ -491,17 +496,17 @@
     }
 
     .today-highlight {
-      background: linear-gradient(135deg, color-mix(in oklab, var(--accent) 16%, var(--panel-strong) 84%), color-mix(in oklab, var(--accent-2) 14%, var(--panel-strong) 86%));
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      padding: 18px;
+      background: transparent;
+      border: none;
+      padding: 0 0 20px;
     }
 
     .entry {
-      padding: 14px;
-      background: var(--panel-strong);
-      border-radius: 18px;
-      border: 1px solid var(--line);
+      padding: 14px 0;
+      background: transparent;
+      border-radius: 0;
+      border: none;
+      border-bottom: 1px solid var(--line);
     }
 
     .entry strong { display: block; font-size: 1.03rem; }
@@ -541,7 +546,7 @@
         width: min(100%, calc(100% - 20px));
         padding: calc(16px + env(safe-area-inset-top)) 0 24px;
       }
-      .grid { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; gap: 0; }
 
       /* Hero — compact strip on mobile */
       .hero {
@@ -572,7 +577,7 @@
       .panel-title { margin-bottom: 12px; padding: 4px 2px 0; }
       .panel-title h2 { font-size: 1.8rem; letter-spacing: -0.02em; }
       .panel-title p { font-size: 0.875rem; margin-top: 4px; }
-      .card { padding: 16px; border-radius: 20px; }
+      .card { padding: 16px 0; border-radius: 0; }
 
       /* Flashcard — primary interaction, give it space */
       .flashcard {
@@ -705,11 +710,11 @@
         <div class="card">
           <h3>Heute sinnvoll</h3>
           <p class="muted">Erst die fälligen Karten, dann 2–3 Schreibübungen. So bleibt dein Stoff warm, ohne dass du dich verzettelst.</p>
-          <div class="card" style="margin-top:16px; background:color-mix(in oklab, var(--panel-strong) 85%, var(--tag-bg) 15%);">
+          <div class="card" style="margin-top:16px;">
             <h3 style="margin-bottom:8px;">Mini-Plan</h3>
             <p class="tiny">1. Heute-Ansicht öffnen.<br>2. Fällige Karten kurz durchgehen.<br>3. 1 schwierige Stelle bewusst laut sprechen.<br>4. Fertig.</p>
           </div>
-          <div class="card" style="margin-top:16px; background:color-mix(in oklab, var(--panel-strong) 85%, var(--tag-bg) 15%);">
+          <div class="card" style="margin-top:16px;">
             <h3 style="margin-bottom:8px;">Lernstand sichern</h3>
             <div class="transfer-box">
               <div class="button-row">
@@ -765,7 +770,7 @@
           <div class="scorebar"><div class="scorefill" id="progressFill"></div></div>
           <p class="tiny" id="progressText" style="margin-top:10px;">0 von 0 Karten angesehen</p>
           <p class="tiny" id="dueText" style="margin-top:6px;">0 Karten gerade fällig</p>
-          <div class="card" style="margin-top:16px; background:color-mix(in oklab, var(--panel-strong) 85%, var(--tag-bg) 15%);">
+          <div class="card" style="margin-top:16px;">
             <h3 style="margin-bottom:8px;">So nutzt du die Seite am besten</h3>
             <p class="tiny">1. Erst im Kopf antworten.<br>2. Dann laut sprechen.<br>3. Danach Quiz oder Schreiben machen.<br>4. Täglich 10 Minuten reichen völlig.</p>
           </div>
@@ -798,7 +803,7 @@
         <div class="card">
           <h3>Warum das hilft</h3>
           <p class="muted">Multiple Choice ist gut, um Bedeutungen schnell wieder anzuknipsen. Es ersetzt nicht das Sprechen — aber es macht den Abruf schneller.</p>
-          <div class="card" style="margin-top:16px; background:color-mix(in oklab, var(--panel-strong) 85%, var(--tag-bg) 15%);">
+          <div class="card" style="margin-top:16px;">
             <h3 style="margin-bottom:8px;">Dein Fokus</h3>
             <p class="tiny">Gerade wichtig für dich: <strong>bunu / şunu</strong>, <strong>-yi</strong>, Tischsätze und Selbstvorstellung.</p>
           </div>
@@ -836,7 +841,7 @@
         <div class="card">
           <h3>Schreib-Regel</h3>
           <p class="muted">Schreib erst sauber, dann schnell. Türkisch belohnt genaue Formen: <strong>şunu</strong>, <strong>bunu</strong>, <strong>Firuze’yi</strong>, <strong>eşimi</strong>.</p>
-          <div class="card" style="margin-top:16px; background:color-mix(in oklab, var(--panel-strong) 85%, var(--tag-bg) 15%);">
+          <div class="card" style="margin-top:16px;">
             <h3 style="margin-bottom:8px;">Kleiner Trick</h3>
             <p class="tiny">Wenn du hängst: erst das türkische Satzmuster denken, dann das einzelne Wort suchen.</p>
             <div class="helper-bar" style="margin-top:10px;">
