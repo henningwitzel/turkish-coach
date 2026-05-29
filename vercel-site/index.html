@@ -359,6 +359,29 @@
       border: 1px solid var(--line);
     }
 
+    .tr-keyboard {
+      display: flex;
+      gap: 6px;
+      margin: 8px 0 0;
+      flex-wrap: wrap;
+    }
+    .tr-keyboard button {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-strong);
+      color: var(--text);
+      font-size: 1.1rem;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-family: inherit;
+      flex: 1;
+      min-width: 44px;
+    }
+    .tr-keyboard button:active {
+      background: var(--accent);
+      color: white;
+    }
+
     .option-btn.correct { background: rgba(34,124,73,0.14); color: var(--good); }
     .option-btn.wrong { background: rgba(163,59,47,0.12); color: var(--bad); }
 
@@ -726,6 +749,14 @@
             <p class="question" id="writeQuestion">Lädt ...</p>
           </div>
           <input type="text" id="writeInput" placeholder="Deine türkische Antwort ..." autocomplete="off" />
+          <div class="tr-keyboard" id="trKeyboard">
+            <button type="button" data-char="ş">ş</button>
+            <button type="button" data-char="ç">ç</button>
+            <button type="button" data-char="ğ">ğ</button>
+            <button type="button" data-char="ı">ı</button>
+            <button type="button" data-char="ö">ö</button>
+            <button type="button" data-char="ü">ü</button>
+          </div>
           <div class="button-row">
             <button class="primary" id="checkWriteBtn">Prüfen</button>
             <button class="ghost" id="showWriteAnswerBtn">Lösung zeigen</button>
@@ -1458,6 +1489,18 @@
     document.getElementById('nextWriteBtn').addEventListener('click', nextWrite);
     document.getElementById('writeInput').addEventListener('keydown', (event) => {
       if (event.key === 'Enter') checkWrite();
+    });
+
+    document.querySelectorAll('#trKeyboard button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById('writeInput');
+        const char = btn.dataset.char;
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        input.value = input.value.slice(0, start) + char + input.value.slice(end);
+        input.selectionStart = input.selectionEnd = start + char.length;
+        input.focus();
+      });
     });
 
     if ('speechSynthesis' in window) {
