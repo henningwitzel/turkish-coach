@@ -578,21 +578,32 @@
       padding: 0 0 20px;
     }
 
+    /* iOS list row — horizontal layout with icon button on right */
     .entry {
-      padding: 11px 0;
-      background: transparent;
-      border-radius: 0;
-      border: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
       border-bottom: 0.5px solid var(--ios-sep);
       min-height: 44px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      background: transparent;
     }
-
     .entry:last-child { border-bottom: none; }
-    .entry strong { display: block; font-size: 17px; font-weight: 500; }
-    .entry small { color: var(--ios-label-2); display: block; margin-top: 3px; font-size: 13px; line-height: 1.4; }
+    .entry-body { flex: 1; min-width: 0; }
+    .entry strong { display: block; font-size: 17px; font-weight: 500; color: var(--ios-label); line-height: 1.3; }
+    .entry small { color: var(--ios-label-2); display: block; margin-top: 2px; font-size: 13px; line-height: 1.4; }
+    .entry-play {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      border: none;
+      background: var(--ios-fill);
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ios-label-2);
+    }
+    .entry-play:active { transform: scale(0.92); }
 
     .scorebar {
       height: 12px;
@@ -1331,11 +1342,11 @@
         recentItems.forEach(item => {
           const el = document.createElement('div');
           el.className = 'entry';
-          el.innerHTML = `<strong>${item.tr}</strong><small>${item.de} · ${item.category}</small>`;
+          el.innerHTML = `<div class="entry-body"><strong>${item.tr}</strong><small>${item.de} · ${item.category}</small></div>`;
           const btn = document.createElement('button');
-          btn.className = 'btn btn-ghost ghost';
-          btn.style.cssText = 'margin-top:6px; font-size:14px; padding:6px 12px; min-height:36px;';
+          btn.className = 'entry-play';
           btn.textContent = '🔊';
+          btn.setAttribute('aria-label', 'Anhören');
           btn.addEventListener('click', () => speakTurkish(item.tr));
           el.appendChild(btn);
           list.appendChild(el);
@@ -1376,13 +1387,15 @@
       const pct = (practiceIdx / practiceTotal) * 100;
       document.getElementById('practiceProgressFill').style.width = pct + '%';
       document.getElementById('practiceCounter').textContent = `${practiceIdx + 1} / ${practiceTotal}`;
-      if (CONFIG.tts.autoplay) speakTurkish(currentPracticeCard.tr);
+      // No autoplay on card show — user should recall first, then hear
     }
 
     function showPracticeAnswer() {
       document.getElementById('practiceAnswer').classList.add('visible');
       document.getElementById('practiceRevealRow').style.display = 'none';
       document.getElementById('practiceGradeRow').style.display = '';
+      // Speak Turkish AFTER user reveals — confirms correct pronunciation
+      if (currentPracticeCard) speakTurkish(currentPracticeCard.tr);
     }
 
     function gradePracticeCard(result) {
@@ -1710,31 +1723,21 @@
       sentenceList.innerHTML = '';
       wordList.innerHTML = '';
 
-      CONTENT.filter(item => item.type === 'satz').forEach(item => {
+      const makeEntry = (item, list) => {
         const el = document.createElement('div');
         el.className = 'entry';
-        el.innerHTML = `<strong>${item.tr}</strong><small>${item.de}<br>${item.category} · ${item.note}</small>`;
-        const playBtn = document.createElement('button');
-        playBtn.className = 'ghost';
-        playBtn.style.marginTop = '10px';
-        playBtn.textContent = '🔊 Anhören';
-        playBtn.onclick = () => speakTurkish(item.tr);
-        el.appendChild(playBtn);
-        sentenceList.appendChild(el);
-      });
+        el.innerHTML = `<div class="entry-body"><strong>${item.tr}</strong><small>${item.de} · ${item.category}</small></div>`;
+        const btn = document.createElement('button');
+        btn.className = 'entry-play';
+        btn.textContent = '🔊';
+        btn.setAttribute('aria-label', 'Anhören');
+        btn.onclick = () => speakTurkish(item.tr);
+        el.appendChild(btn);
+        list.appendChild(el);
+      };
 
-      CONTENT.filter(item => item.type === 'wort').forEach(item => {
-        const el = document.createElement('div');
-        el.className = 'entry';
-        el.innerHTML = `<strong>${item.tr}</strong><small>${item.de}<br>${item.category} · ${item.note}</small>`;
-        const playBtn = document.createElement('button');
-        playBtn.className = 'ghost';
-        playBtn.style.marginTop = '10px';
-        playBtn.textContent = '🔊 Anhören';
-        playBtn.onclick = () => speakTurkish(item.tr);
-        el.appendChild(playBtn);
-        wordList.appendChild(el);
-      });
+      CONTENT.filter(item => item.type === 'satz').forEach(item => makeEntry(item, sentenceList));
+      CONTENT.filter(item => item.type === 'wort').forEach(item => makeEntry(item, wordList));
     }
 
     // Tab navigation
