@@ -1,3 +1,4 @@
+- [2026-05-29 — Phase 2 opener feedback](2026-05-29.md) — "Was hast du heute gehört?" bringt wenig, direkt mit Inhalt starten
 - [2026-05-26 — Hatay arrival, Phase 2 started](2026-05-26.md) — immersion mode, real conversations happening
 - [2026-05-23 — Exercise direction preference](2026-05-23.md) — always label Deutsch→Türkisch vs Türkisch→Deutsch
 - [2026-05-18 — Course calibration](2026-05-18.md) — chain lessons from last real exercise, not topics

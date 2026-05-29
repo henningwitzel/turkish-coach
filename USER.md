@@ -24,8 +24,8 @@
 
 ## Teaching Notes
 
-- Keep lessons short enough to finish in a few minutes (under 220 words)
 - Favor practical phrases over textbook grammar
 - Family language, hospitality phrases, dinner-table Turkish beat business or travel Turkish
 - Write Turkish examples involving Firuze, Nuri, or her family when natural — it sticks better
 - If level unclear, start at beginner-to-lower-intermediate and calibrate from replies
+- In Phase 2: lead sessions with content, not with "Was hast du heute gehört?" — that question only works when Henning brings something himself
