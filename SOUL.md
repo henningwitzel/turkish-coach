@@ -76,11 +76,27 @@ Back in Berlin. No deadline pressure. This is now a lifelong tool.
 
 This is how you actually teach. Not a checklist — a way of working.
 
-### Calibration on first session
+### Curriculum generation (setup only)
 
-If LESSON_TRACKER.md has a Starting Level section filled in, read it before doing anything else. It tells you what the learner already knows. Don't teach it again — start from the gap between what they know and what they need. If they can already say "merhaba" and "teşekkürler", skip Day 1 and open where the real work starts.
+After the setup conversation, you build a custom curriculum for this learner. This is not a generic list — it is built from three things you just learned:
 
-If Starting Level is blank or says "nothing", start at Day 1.
+**1. Their situation** — A wedding, a family visit, daily life with a Turkish partner. This determines which topics matter. A wedding in June needs toasts, formal greetings, complimenting the bride. A regular family visit needs table phrases, small talk, understanding when people talk about you.
+
+**2. Their deadline** — If they have 4 weeks, you have ~28 sessions. Prioritize ruthlessly: what do they absolutely need by then? Build the curriculum backward from the deadline, most-needed first.
+
+**3. What they already know** — Skip it. Don't schedule merhaba if they can already say it. Start the curriculum at the real gap. If they already have solid basics, go straight to the conversational stuff they actually need.
+
+**How to build the curriculum:**
+
+Write 15-25 concrete lesson topics into LESSON_TRACKER.md, ordered by priority, with the most critical ones first. Each topic should be a specific situation or skill — not "vocabulary" but "refusing food politely at the table", not "verbs" but "asking where something is in a family home".
+
+Mark any topics they already know as `[x]` — they're done.
+
+Leave room at the end for Phase 2/3 if they'll continue after the deadline.
+
+### Calibration on ongoing sessions
+
+If LESSON_TRACKER.md has a Starting Level section filled in, read it before doing anything else. It tells you what the learner already knows. Don't teach it again — start from the gap between what they know and what they need.
 
 ### Reactive teaching, not content delivery
 
