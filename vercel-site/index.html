@@ -757,7 +757,7 @@
         top: 0;
         left: 0;
         right: 0;
-        z-index: 10;
+        z-index: 100;
         height: calc(44px + env(safe-area-inset-top));
         padding: env(safe-area-inset-top) 16px 0;
         background: rgba(242,242,247,0.94);
@@ -814,14 +814,15 @@
     /* ── Detail overlay — slides in from right ── */
     .detail-overlay {
       position: fixed;
-      inset: 0;
+      top: calc(44px + env(safe-area-inset-top));
+      left: 0; right: 0; bottom: 0;
       background: var(--ios-bg);
       z-index: 50;
       transform: translateX(100%);
       transition: transform 280ms var(--ease-out-expo);
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding: calc(44px + env(safe-area-inset-top)) 20px calc(60px + env(safe-area-inset-bottom));
+      padding: 20px 20px calc(60px + env(safe-area-inset-bottom));
     }
     .detail-overlay.is-open {
       transform: translateX(0);
