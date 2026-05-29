@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="tarkan">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -9,7 +9,50 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Tarkan Türkisch" />
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4/dist/full.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    /* ── DaisyUI Custom Theme ── */
+    [data-theme=tarkan] {
+      color-scheme: light;
+      /* Primary: Turkish orange */
+      --p: 16 76% 54%;
+      --pf: 16 76% 44%;
+      --pc: 0 0% 100%;
+      /* Neutral */
+      --n: 220 9% 55%;
+      --nf: 220 9% 45%;
+      --nc: 0 0% 100%;
+      /* Base: iOS colors */
+      --b1: 0 0% 100%;
+      --b2: 240 5% 96%;
+      --b3: 240 4% 91%;
+      --bc: 0 0% 7%;
+      /* Status */
+      --su: 142 71% 45%;
+      --er: 4 86% 58%;
+      --wa: 37 91% 55%;
+      /* Borders */
+      --rounded-btn: 0.625rem;
+      --rounded-box: 0.625rem;
+      --btn-focus-scale: 0.97;
+      --animation-btn: 0.1s;
+      --animation-input: 0.1s;
+    }
+    [data-theme=tarkan].dark,
+    [data-theme=tarkan] .dark {
+      color-scheme: dark;
+    }
+    @media (prefers-color-scheme: dark) {
+      [data-theme=tarkan] {
+        --p: 16 76% 64%;
+        --b1: 0 0% 11%;
+        --b2: 240 4% 16%;
+        --b3: 240 4% 22%;
+        --bc: 0 0% 100%;
+      }
+    }
+
     :root {
       color-scheme: light;
 
@@ -371,41 +414,17 @@
       align-items: center;
     }
 
-    button.primary, button.secondary, button.ghost, .option-btn {
-      border: 0;
-      border-radius: 10px;
-      padding: 13px 16px;
-      font: inherit;
-      font-size: 17px;
-      font-weight: 600;
-      cursor: pointer;
-      min-height: 44px;
-      transition: transform 0.12s var(--ease-out-expo), opacity 0.12s ease, background 0.15s ease;
-    }
+    /* Override DaisyUI colors with iOS palette — DaisyUI handles structure/focus/transitions */
+    button.primary, .btn.primary   { background: var(--accent) !important; color: white !important; border-color: transparent !important; }
+    button.secondary, .btn.secondary { background: var(--ios-fill) !important; color: var(--ios-label) !important; border-color: transparent !important; }
+    button.ghost, .btn.ghost       { background: var(--ios-fill) !important; color: var(--ios-label) !important; border-color: transparent !important; }
 
-    @media (hover: hover) {
-      button.primary:hover, button.secondary:hover, button.ghost:hover, .option-btn:hover { opacity: 0.85; }
-    }
-    button.primary:active, button.secondary:active, button.ghost:active, .option-btn:active {
-      transform: scale(0.97);
-      opacity: 0.80;
-      transition-duration: 0.06s;
-    }
+    /* Ensure iOS touch targets and typography */
+    .btn { min-height: 44px; font-family: inherit; font-size: 17px; font-weight: 600; border-radius: 10px !important; }
+    .btn:active { transform: scale(0.97) !important; }
 
-    /* iOS Filled — primary action */
-    button.primary { background: var(--accent); color: white; }
-
-    /* iOS Tinted Gray — secondary action */
-    button.secondary {
-      background: var(--ios-fill);
-      color: var(--ios-label);
-    }
-
-    /* iOS Plain — tertiary */
-    button.ghost {
-      background: var(--ios-fill);
-      color: var(--ios-label);
-    }
+    /* Quiz option buttons — left-aligned text */
+    .option-btn { justify-content: flex-start; text-align: left; background: var(--ios-fill) !important; color: var(--ios-label) !important; border-color: transparent !important; }
 
     #reviewGradeRow {
       display: grid;
@@ -483,8 +502,12 @@
       border: none;
       font: inherit;
       font-size: 17px;
-      background: var(--ios-fill);
-      color: var(--ios-label);
+      background: var(--ios-fill) !important;
+      color: var(--ios-label) !important;
+      outline: none;
+    }
+    input[type="text"]:focus {
+      box-shadow: 0 0 0 2px var(--accent);
     }
 
     .feedback {
@@ -808,8 +831,8 @@
             <h3 style="margin-bottom:8px;">Heute dran</h3>
             <p class="muted" id="todaySummary">Lädt ...</p>
             <div class="helper-bar">
-              <button class="primary" id="startDueBtn">Fällige Karten starten</button>
-              <button class="ghost" id="refreshTodayBtn">Aktualisieren</button>
+              <button class="btn btn-primary primary" id="startDueBtn">Fällige Karten starten</button>
+              <button class="btn btn-ghost ghost" id="refreshTodayBtn">Aktualisieren</button>
             </div>
           </div>
           <div class="card">
@@ -832,8 +855,8 @@
             <h3 style="margin-bottom:8px;">Lernstand sichern</h3>
             <div class="transfer-box">
               <div class="button-row">
-                <button class="ghost" id="exportBtn">Exportieren</button>
-                <button class="ghost" id="importBtn">Importieren</button>
+                <button class="btn btn-ghost ghost" id="exportBtn">Exportieren</button>
+                <button class="btn btn-ghost ghost" id="importBtn">Importieren</button>
               </div>
               <textarea class="transfer" id="transferData" placeholder="Hier erscheint dein Export — oder füge hier einen Import ein."></textarea>
               <div class="feedback" id="transferFeedback"></div>
@@ -858,21 +881,21 @@
             <p class="tiny" style="margin-top:12px;">Dreh die Karte erst im Kopf um, dann laut sagen.</p>
             <div class="prompt" id="reviewPrompt">Lädt ...</div>
             <div class="helper-bar">
-              <button class="ghost" id="speakReviewBtn">🔊 Aussprache</button>
+              <button class="btn btn-ghost ghost" id="speakReviewBtn">🔊 Aussprache</button>
               <span class="tiny">spricht den türkischen Satz laut vor</span>
             </div>
           </div>
           <div>
             <div class="answer" id="reviewAnswer"></div>
             <div class="actions" style="margin-top:14px;">
-              <button class="primary" id="showAnswerBtn">Antwort zeigen</button>
-              <button class="secondary" id="nextCardBtn">Nächste Karte</button>
+              <button class="btn btn-primary primary" id="showAnswerBtn">Antwort zeigen</button>
+              <button class="btn btn-ghost secondary" id="nextCardBtn">Nächste Karte</button>
             </div>
             <div class="actions" id="reviewGradeRow" style="margin-top:10px; display:none; flex-wrap:wrap; gap:8px; width:100%;">
-              <button class="ghost" id="gradeAgainBtn" style="flex:1; min-width:80px;">🔴 Nochmal</button>
-              <button class="ghost" id="gradeHardBtn" style="flex:1; min-width:80px;">🟡 Schwer</button>
-              <button class="ghost" id="gradeGoodBtn" style="flex:1; min-width:80px;">🟢 Gut</button>
-              <button class="ghost" id="gradeEasyBtn" style="flex:1; min-width:80px;">⚡ Einfach</button>
+              <button class="btn btn-ghost ghost" id="gradeAgainBtn" style="flex:1; min-width:80px;">🔴 Nochmal</button>
+              <button class="btn btn-ghost ghost" id="gradeHardBtn" style="flex:1; min-width:80px;">🟡 Schwer</button>
+              <button class="btn btn-ghost ghost" id="gradeGoodBtn" style="flex:1; min-width:80px;">🟢 Gut</button>
+              <button class="btn btn-ghost ghost" id="gradeEasyBtn" style="flex:1; min-width:80px;">⚡ Einfach</button>
             </div>
           </div>
         </div>
@@ -906,12 +929,12 @@
           <div>
             <div class="tag-row"><span class="tag">Multiple Choice</span></div>
             <p class="question" id="quizQuestion">Lädt ...</p>
-            <button class="ghost" id="speakQuizBtn" style="margin-top:8px; font-size:0.9rem;">🔊 Anhören</button>
+            <button class="btn btn-ghost ghost" id="speakQuizBtn" style="margin-top:8px; font-size:0.9rem;">🔊 Anhören</button>
           </div>
           <div class="option-list" id="quizOptions"></div>
           <div class="feedback" id="quizFeedback"></div>
           <div class="button-row">
-            <button class="secondary" id="nextQuizBtn">Nächste Frage</button>
+            <button class="btn btn-ghost secondary" id="nextQuizBtn">Nächste Frage</button>
           </div>
         </div>
         <div class="card">
@@ -936,7 +959,7 @@
             <div class="tag-row"><span class="tag">Schreibübung</span></div>
             <p class="question" id="writeQuestion">Lädt ...</p>
           </div>
-          <input type="text" id="writeInput" placeholder="Deine türkische Antwort ..." autocomplete="off" />
+          <input type="text" id="writeInput" class="input w-full" placeholder="Deine türkische Antwort ..." autocomplete="off" />
           <div class="tr-keyboard" id="trKeyboard">
             <button type="button" data-char="ş">ş</button>
             <button type="button" data-char="ç">ç</button>
@@ -946,9 +969,9 @@
             <button type="button" data-char="ü">ü</button>
           </div>
           <div class="button-row">
-            <button class="primary" id="checkWriteBtn">Prüfen</button>
-            <button class="ghost" id="showWriteAnswerBtn">Lösung zeigen</button>
-            <button class="secondary" id="nextWriteBtn">Nächste Übung</button>
+            <button class="btn btn-primary primary" id="checkWriteBtn">Prüfen</button>
+            <button class="btn btn-ghost ghost" id="showWriteAnswerBtn">Lösung zeigen</button>
+            <button class="btn btn-ghost secondary" id="nextWriteBtn">Nächste Übung</button>
           </div>
           <div class="feedback" id="writeFeedback"></div>
         </div>
@@ -959,7 +982,7 @@
             <h3 style="margin-bottom:8px;">Kleiner Trick</h3>
             <p class="tiny">Wenn du hängst: erst das türkische Satzmuster denken, dann das einzelne Wort suchen.</p>
             <div class="helper-bar" style="margin-top:10px;">
-              <button class="ghost" id="speakWriteBtn">🔊 Lösung anhören</button>
+              <button class="btn btn-ghost ghost" id="speakWriteBtn">🔊 Lösung anhören</button>
             </div>
           </div>
         </div>
@@ -1437,7 +1460,7 @@
       if (CONFIG.tts.autoplay) speakTurkish(currentQuiz.item.tr);
       currentQuiz.options.forEach(option => {
         const btn = document.createElement('button');
-        btn.className = 'option-btn';
+        btn.className = 'btn option-btn w-full text-left justify-start';
         btn.textContent = option;
         btn.onclick = () => {
           const buttons = [...wrap.querySelectorAll('button')];
