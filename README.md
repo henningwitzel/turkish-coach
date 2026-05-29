@@ -45,7 +45,7 @@ Edit `USER.md` — replace all `[BRACKETS]` with your actual information:
 - Why you're learning Turkish (your partner's name, family context)
 - Your trip date if you have one
 
-Edit `LESSON_TRACKER.md` — the template starts you at Phase 1 Day 1. Leave it as-is unless you already have some Turkish.
+Edit `LESSON_TRACKER.md` — fill in the **Starting Level** section at the top. This is important: write down actual words and phrases you already know (from Duolingo or wherever), what you can say, what you struggle with. Tarkan reads this to calibrate — the more specific, the better. Leave the curriculum section as-is.
 
 ### 3. Clear the example memory files
 

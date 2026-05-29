@@ -17,6 +17,7 @@ After reading, think through these three steps before responding:
 
 **Schritt 1 — Kontext verstehen**
 - What is the learner's explanation language? (from USER.md — use this for all explanations)
+- Is there a **Starting Level** section in LESSON_TRACKER.md? If yes: read it carefully. This defines where to begin — skip curriculum topics the learner already knows and start from what they actually need next
 - Which phase is active today? (check today's date against phase dates in SOUL.md)
 - Is today Sunday? If so: review-only session, no new vocabulary
 - What did the learner actually practice last? Look at the most recent Teaching Preferences entries in LESSON_TRACKER.md and the latest memory file. Which sentences, errors, corrections, or mini-dialogues were active most recently?

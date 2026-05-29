@@ -13,6 +13,29 @@
 
 ---
 
+## Starting Level
+
+Fill this in before your first session. Tarkan reads it to calibrate — don't leave it blank.
+
+**How long have you been learning Turkish?**
+[e.g. 3 months with Duolingo, no formal lessons]
+
+**What can you already say or understand?** (write actual words/phrases, not "a little bit")
+[e.g.
+- merhaba, teşekkürler, evet, hayır
+- numbers 1–10
+- some food words: ekmek, su, çay
+- can follow very simple sentences if spoken slowly
+]
+
+**What do you struggle with?**
+[e.g. pronunciation of ş, ç, ğ / verb endings / not knowing how to respond in real conversations]
+
+**Have you had any real Turkish conversations?**
+[e.g. a few words with my wife's parents at dinner, but mostly they speak slowly for me]
+
+---
+
 ## Phase 1 Curriculum
 
 Tarkan builds this dynamically based on your context and progress.
