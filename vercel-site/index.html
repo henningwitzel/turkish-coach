@@ -777,6 +777,41 @@
       }
     }
 
+    /* Hero is hidden — stat elements kept in DOM for updateStats compatibility */
+    .hero { display: none !important; }
+
+    /* ── Practice Screen ── */
+    .practice-status { text-align: center; padding: 32px 0 24px; }
+    .practice-due-count { font-size: 64px; font-weight: 700; line-height: 1; color: var(--accent); letter-spacing: -0.04em; font-family: -apple-system, sans-serif; }
+    .practice-due-label { font-size: 17px; color: var(--ios-label-2); margin: 8px 0 24px; }
+    .practice-allclear { font-size: 48px; margin-bottom: 8px; }
+    .practice-allclear-label { font-size: 22px; font-weight: 700; color: var(--ios-label); margin-bottom: 6px; }
+    .practice-allclear-sub { font-size: 15px; color: var(--ios-label-2); margin-bottom: 24px; }
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
+    .stat-chip { background: var(--ios-card); border-radius: 10px; padding: 12px 10px; text-align: center; }
+    .stat-val { font-size: 17px; font-weight: 700; color: var(--ios-label); font-variant-numeric: tabular-nums; }
+    .stat-key { font-size: 11px; color: var(--ios-label-2); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .section-label { font-size: 13px; font-weight: 600; color: var(--ios-label-2); text-transform: uppercase; letter-spacing: 0.06em; padding-bottom: 8px; margin-top: 16px; }
+    .practice-progress-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .practice-progress-bar { flex: 1; height: 4px; background: var(--ios-fill); border-radius: 999px; overflow: hidden; }
+    .practice-progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.3s var(--ease-out-expo); width: 0%; }
+    .practice-counter { font-size: 13px; color: var(--ios-label-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    #practiceGradeRow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+    #practiceAgainBtn,#practiceHardBtn,#practiceGoodBtn,#practiceEasyBtn { border: none; border-radius: 10px; min-height: 44px; font: 600 17px/1 -apple-system,sans-serif; cursor: pointer; transition: transform 0.1s; }
+    #practiceAgainBtn:active,#practiceHardBtn:active,#practiceGoodBtn:active,#practiceEasyBtn:active { transform: scale(0.97); }
+    #practiceAgainBtn { background: rgba(255,59,48,0.12);  color: #FF3B30; }
+    #practiceHardBtn  { background: rgba(255,159,10,0.12); color: #FF9F0A; }
+    #practiceGoodBtn  { background: rgba(52,199,89,0.12);  color: #34C759; }
+    #practiceEasyBtn  { background: var(--accent); color: white; }
+    @media (prefers-color-scheme: dark) {
+      #practiceAgainBtn { background: rgba(255,69,58,0.16);  color: #FF453A; }
+      #practiceHardBtn  { background: rgba(255,159,10,0.16); color: #FF9F0A; }
+      #practiceGoodBtn  { background: rgba(50,215,75,0.16);  color: #32D74B; }
+    }
+    .done-state { text-align: center; padding: 48px 0; }
+    .done-icon { font-size: 56px; color: var(--good); margin-bottom: 16px; }
+    .done-state h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 8px; }
+
     @keyframes panelIn {
       from { opacity: 0; transform: translateY(6px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -795,7 +830,7 @@
 </head>
 <body>
   <nav class="nav-bar">
-    <span class="nav-title" id="navTitle">Heute</span>
+    <span class="nav-title" id="navTitle">Üben</span>
   </nav>
   <div class="wrap">
     <section class="hero" id="heroSection">
@@ -813,180 +848,85 @@
     </section>
 
     <div class="tabs">
-      <button class="tab active" data-tab="today"><span class="tab-icon">☀️</span><span class="tab-label">Heute</span></button>
-      <button class="tab" data-tab="review"><span class="tab-icon">🃏</span><span class="tab-label">Karten</span></button>
-      <button class="tab" data-tab="quiz"><span class="tab-icon">✅</span><span class="tab-label">Quiz</span></button>
-      <button class="tab" data-tab="write"><span class="tab-icon">✍️</span><span class="tab-label">Schreiben</span></button>
+      <button class="tab active" data-tab="practice"><span class="tab-icon">⚡</span><span class="tab-label">Üben</span></button>
       <button class="tab" data-tab="library"><span class="tab-icon">📚</span><span class="tab-label">Sätze</span></button>
     </div>
 
-    <section class="panel active" id="today">
-      <div class="panel-title">
-        <h2>Heute</h2>
-        <p>Dein täglicher Startpunkt mit fälligen Karten und dem sinnvollsten nächsten Schritt.</p>
-      </div>
-      <div class="grid">
-        <div class="today-stack">
-          <div class="today-highlight">
-            <h3 style="margin-bottom:8px;">Heute dran</h3>
-            <p class="muted" id="todaySummary">Lädt ...</p>
-            <div class="helper-bar">
-              <button class="btn btn-primary primary" id="startDueBtn">Fällige Karten starten</button>
-              <button class="btn btn-ghost ghost" id="refreshTodayBtn">Aktualisieren</button>
-            </div>
-          </div>
-          <div class="card">
-            <h3>Fällige Karten</h3>
-            <div class="list" id="todayDueList"></div>
-          </div>
-          <div class="card">
-            <h3>Kleine Erfolge</h3>
-            <div class="badge-grid" id="badgeGrid"></div>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Heute sinnvoll</h3>
-          <p class="muted">Erst die fälligen Karten, dann 2–3 Schreibübungen. So bleibt dein Stoff warm, ohne dass du dich verzettelst.</p>
-          <div class="card" style="margin-top:16px;">
-            <h3 style="margin-bottom:8px;">Mini-Plan</h3>
-            <p class="tiny">1. Heute-Ansicht öffnen.<br>2. Fällige Karten kurz durchgehen.<br>3. 1 schwierige Stelle bewusst laut sprechen.<br>4. Fertig.</p>
-          </div>
-          <div class="card" style="margin-top:16px;">
-            <h3 style="margin-bottom:8px;">Lernstand sichern</h3>
-            <div class="transfer-box">
-              <div class="button-row">
-                <button class="btn btn-ghost ghost" id="exportBtn">Exportieren</button>
-                <button class="btn btn-ghost ghost" id="importBtn">Importieren</button>
-              </div>
-              <textarea class="transfer" id="transferData" placeholder="Hier erscheint dein Export — oder füge hier einen Import ein."></textarea>
-              <div class="feedback" id="transferFeedback"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <section class="panel active" id="practice">
 
-    <section class="panel" id="review">
-      <div class="panel-title">
-        <h2>Karten</h2>
-        <p>Wiederholen, laut sprechen und direkt markieren, ob ein Satz sitzt oder nochmal drankommen soll.</p>
+      <!-- HOME STATE -->
+      <div id="practiceHome">
+        <div id="practiceStatus" class="practice-status">
+          <!-- filled by JS -->
+        </div>
+
+        <div id="recentSection" style="display:none">
+          <div class="section-label">Zuletzt mit Tarkan</div>
+          <div class="list" id="recentList"></div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-chip"><div class="stat-val" id="statXP">Lv1</div><div class="stat-key">Level</div></div>
+          <div class="stat-chip"><div class="stat-val" id="statSeen">0</div><div class="stat-key">Gesehen</div></div>
+          <div class="stat-chip"><div class="stat-val" id="statDue">0</div><div class="stat-key">Fällig</div></div>
+        </div>
+
+        <div class="card" style="margin-top:8px;">
+          <h3 style="margin-bottom:10px; font-size:15px; color:var(--ios-label-2);">Lernstand sichern</h3>
+          <div class="button-row">
+            <button class="btn btn-ghost ghost" id="exportBtn">Exportieren</button>
+            <button class="btn btn-ghost ghost" id="importBtn">Importieren</button>
+          </div>
+          <textarea class="textarea w-full" id="transferData" style="margin-top:8px;" placeholder="Export / Import..."></textarea>
+          <div class="feedback" id="transferFeedback"></div>
+        </div>
       </div>
-      <div class="grid">
-        <div class="card flashcard">
+
+      <!-- ACTIVE PRACTICE STATE -->
+      <div id="practiceActive" style="display:none">
+        <div class="practice-progress-wrap">
+          <div class="practice-progress-bar"><div class="practice-progress-fill" id="practiceProgressFill"></div></div>
+          <span class="practice-counter" id="practiceCounter">1 / 8</span>
+        </div>
+
+        <div class="flashcard" id="practiceCard">
           <div>
             <div class="tag-row">
-              <span class="tag" id="reviewCategory">Kategorie</span>
-              <span class="tag" id="reviewType">Typ</span>
+              <span class="tag" id="practiceCategory">Kategorie</span>
+              <span class="tag" id="practiceType">Satz</span>
             </div>
-            <p class="tiny" style="margin-top:12px;">Dreh die Karte erst im Kopf um, dann laut sagen.</p>
-            <div class="prompt" id="reviewPrompt">Lädt ...</div>
+            <p class="tiny" style="margin-top:12px; color:var(--ios-label-2);">Erst im Kopf, dann laut sagen.</p>
+            <div class="prompt" id="practicePrompt">...</div>
             <div class="helper-bar">
-              <button class="btn btn-ghost ghost" id="speakReviewBtn">🔊 Aussprache</button>
-              <span class="tiny">spricht den türkischen Satz laut vor</span>
+              <button class="btn btn-ghost ghost" id="speakPracticeBtn">🔊 Aussprache</button>
             </div>
           </div>
           <div>
-            <div class="answer" id="reviewAnswer"></div>
-            <div class="actions" style="margin-top:14px;">
-              <button class="btn btn-primary primary" id="showAnswerBtn">Antwort zeigen</button>
-              <button class="btn btn-ghost secondary" id="nextCardBtn">Nächste Karte</button>
+            <div class="answer" id="practiceAnswer"></div>
+            <div id="practiceRevealRow" class="button-row">
+              <button class="btn btn-primary primary" id="practiceRevealBtn">Antwort zeigen</button>
+              <button class="btn btn-ghost ghost" id="practiceSkipBtn">Überspringen</button>
             </div>
-            <div class="actions" id="reviewGradeRow" style="margin-top:10px; display:none; flex-wrap:wrap; gap:8px; width:100%;">
-              <button class="btn btn-ghost ghost" id="gradeAgainBtn" style="flex:1; min-width:80px;">🔴 Nochmal</button>
-              <button class="btn btn-ghost ghost" id="gradeHardBtn" style="flex:1; min-width:80px;">🟡 Schwer</button>
-              <button class="btn btn-ghost ghost" id="gradeGoodBtn" style="flex:1; min-width:80px;">🟢 Gut</button>
-              <button class="btn btn-ghost ghost" id="gradeEasyBtn" style="flex:1; min-width:80px;">⚡ Einfach</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Filter</h3>
-          <p class="muted" style="margin-bottom:12px;">Fokussiere dich auf Tischsätze, Familie, Selbstvorstellung oder Wünsche.</p>
-          <div class="category-row" id="categoryFilters"></div>
-          <div class="scorebar"><div class="scorefill" id="progressFill"></div></div>
-          <p class="tiny" id="progressText" style="margin-top:10px;">0 von 0 Karten angesehen</p>
-          <p class="tiny" id="dueText" style="margin-top:6px;">0 Karten gerade fällig</p>
-          <div class="card" style="margin-top:16px;">
-            <h3 style="margin-bottom:8px;">So nutzt du die Seite am besten</h3>
-            <p class="tiny">1. Erst im Kopf antworten.<br>2. Dann laut sprechen.<br>3. Danach Quiz oder Schreiben machen.<br>4. Täglich 10 Minuten reichen völlig.</p>
-          </div>
-          <div class="install-card">
-            <h3 style="margin-bottom:8px;">iPhone-Tipp</h3>
-            <p class="tiny">In Safari auf <strong>Teilen</strong> → <strong>Zum Home-Bildschirm</strong>. Dann fühlt sich die Seite viel mehr wie eine kleine App an.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="panel" id="quiz">
-      <div class="panel-title">
-        <h2>Quiz</h2>
-        <p>Schneller Abruf für Bedeutungen und Reaktionen — gut für Tempo und Sicherheit.</p>
-      </div>
-      <div class="grid">
-        <div class="card exercise-box">
-          <div>
-            <div class="tag-row"><span class="tag">Multiple Choice</span></div>
-            <p class="question" id="quizQuestion">Lädt ...</p>
-            <button class="btn btn-ghost ghost" id="speakQuizBtn" style="margin-top:8px; font-size:0.9rem;">🔊 Anhören</button>
-          </div>
-          <div class="option-list" id="quizOptions"></div>
-          <div class="feedback" id="quizFeedback"></div>
-          <div class="button-row">
-            <button class="btn btn-ghost secondary" id="nextQuizBtn">Nächste Frage</button>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Warum das hilft</h3>
-          <p class="muted">Multiple Choice ist gut, um Bedeutungen schnell wieder anzuknipsen. Es ersetzt nicht das Sprechen — aber es macht den Abruf schneller.</p>
-          <div class="card" style="margin-top:16px;">
-            <h3 style="margin-bottom:8px;">Dein Fokus</h3>
-            <p class="tiny">Gerade wichtig für dich: <strong>bunu / şunu</strong>, <strong>-yi</strong>, Tischsätze und Selbstvorstellung.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="panel" id="write">
-      <div class="panel-title">
-        <h2>Schreiben</h2>
-        <p>Hier wird aus Wiedererkennen echtes Formulieren. Kleine Fehler sind okay — Hauptsache sauberer Satzbau.</p>
-      </div>
-      <div class="grid">
-        <div class="card exercise-box">
-          <div>
-            <div class="tag-row"><span class="tag">Schreibübung</span></div>
-            <p class="question" id="writeQuestion">Lädt ...</p>
-          </div>
-          <input type="text" id="writeInput" class="input w-full" placeholder="Deine türkische Antwort ..." autocomplete="off" />
-          <div class="tr-keyboard" id="trKeyboard">
-            <button type="button" data-char="ş">ş</button>
-            <button type="button" data-char="ç">ç</button>
-            <button type="button" data-char="ğ">ğ</button>
-            <button type="button" data-char="ı">ı</button>
-            <button type="button" data-char="ö">ö</button>
-            <button type="button" data-char="ü">ü</button>
-          </div>
-          <div class="button-row">
-            <button class="btn btn-primary primary" id="checkWriteBtn">Prüfen</button>
-            <button class="btn btn-ghost ghost" id="showWriteAnswerBtn">Lösung zeigen</button>
-            <button class="btn btn-ghost secondary" id="nextWriteBtn">Nächste Übung</button>
-          </div>
-          <div class="feedback" id="writeFeedback"></div>
-        </div>
-        <div class="card">
-          <h3>Schreib-Regel</h3>
-          <p class="muted">Schreib erst sauber, dann schnell. Türkisch belohnt genaue Formen: <strong>şunu</strong>, <strong>bunu</strong>, <strong>Firuze’yi</strong>, <strong>eşimi</strong>.</p>
-          <div class="card" style="margin-top:16px;">
-            <h3 style="margin-bottom:8px;">Kleiner Trick</h3>
-            <p class="tiny">Wenn du hängst: erst das türkische Satzmuster denken, dann das einzelne Wort suchen.</p>
-            <div class="helper-bar" style="margin-top:10px;">
-              <button class="btn btn-ghost ghost" id="speakWriteBtn">🔊 Lösung anhören</button>
+            <div id="practiceGradeRow" style="display:none;">
+              <button id="practiceAgainBtn">🔴 Nochmal</button>
+              <button id="practiceHardBtn">🟡 Schwer</button>
+              <button id="practiceGoodBtn">🟢 Gut</button>
+              <button id="practiceEasyBtn">⚡ Einfach</button>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- DONE STATE -->
+      <div id="practiceDone" style="display:none">
+        <div class="done-state">
+          <div class="done-icon">✓</div>
+          <h2>Alles wiederholt!</h2>
+          <p class="muted" id="doneNextLabel">Nächste Karte fällig: bald</p>
+          <button class="btn btn-ghost ghost" id="doneBrowseBtn" style="margin-top:16px;">Sätze durchblättern</button>
+        </div>
+      </div>
+
     </section>
 
     <section class="panel" id="library">
@@ -1121,6 +1061,13 @@
         easy:  14 * 24 * 60 * 60 * 1000
       }
     };
+
+    // ─────────────────────────────────────────────────────────────────────
+    // RECENT — Tarkan updates this after each session (IDs of new phrases)
+    // ─────────────────────────────────────────────────────────────────────
+    const RECENT_IDS = [
+      'w38', 'w39', 'w37', 'w35', 'w36'  // özledim, özlemek, tokum, anladım, gerçekten
+    ];
 
     const stateKey = 'tarkan-trainer-progress-v4';
     const now = () => Date.now();
@@ -1284,18 +1231,24 @@
     }
 
     function updateStats() {
-      document.getElementById('statCards').textContent = String(new Set(appState.seen).size);
-      document.getElementById('statQuiz').textContent = appState.quizTotal ? Math.round((appState.quizCorrect / appState.quizTotal) * 100) + '%' : '0%';
-      document.getElementById('statWrite').textContent = appState.writeTotal ? Math.round((appState.writeCorrect / appState.writeTotal) * 100) + '%' : '0%';
+      const setEl = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
       const levelInfo = getLevelInfo();
-      document.getElementById('statMood').textContent = `Lv${levelInfo.level} · ${levelInfo.xp} XP`;
+      const seenCount = new Set(appState.seen).size;
+      const dueCount = dueCards(CONTENT).length;
+      // Legacy stat elements (kept in DOM for compatibility)
+      setEl('statCards', String(seenCount));
+      setEl('statMood', `Lv${levelInfo.level} · ${levelInfo.xp} XP`);
+      // New practice screen stats
+      setEl('statXP', `Lv${levelInfo.level}`);
+      setEl('statSeen', String(seenCount));
+      setEl('statDue', String(dueCount));
+      // Library progress
       const total = filteredContent().length;
-      const seenCount = filteredContent().filter(item => appState.seen.includes(item.id)).length;
-      const dueCount = dueCards(filteredContent()).length;
-      document.getElementById('progressFill').style.width = total ? (seenCount / total) * 100 + '%' : '0%';
-      document.getElementById('progressText').textContent = `${seenCount} von ${total} Karten in diesem Fokus angesehen`;
-      document.getElementById('dueText').textContent = `${dueCount} Karten gerade fällig`;
-      renderToday();
+      const seenFiltered = filteredContent().filter(item => appState.seen.includes(item.id)).length;
+      const pfill = document.getElementById('progressFill');
+      if (pfill) pfill.style.width = total ? (seenFiltered / total) * 100 + '%' : '0%';
+      setEl('progressText', `${seenFiltered} von ${total} Karten angesehen`);
+      setEl('dueText', `${dueCount} Karten gerade fällig`);
     }
 
     function renderCategories() {
@@ -1309,32 +1262,157 @@
           appState.category = category;
           saveState();
           renderCategories();
-          nextReview();
-          nextQuiz();
-          nextWrite();
         };
         holder.appendChild(btn);
       });
     }
 
-    function updateHeroVisibility(activeTab) {
-      const hero = document.getElementById('heroSection');
-      const toggleBtn = document.getElementById('heroToggleBtn');
-      const isMobile = window.innerWidth <= 860;
-      const showHero = !isMobile || activeTab === 'today';
-      hero.classList.toggle('is-hidden-mobile', !showHero);
-      hero.classList.toggle('is-collapsed', isMobile && showHero && !appState.heroExpandedMobile);
-      toggleBtn.textContent = hero.classList.contains('is-collapsed') ? 'Mehr anzeigen' : 'Einklappen';
-    }
+    function updateHeroVisibility() { /* no-op — hero hidden via CSS */ }
 
-    const NAV_TITLES = { today: 'Heute', review: 'Karten', quiz: 'Quiz', write: 'Schreiben', library: 'Sätze' };
+    const NAV_TITLES = { practice: 'Üben', library: 'Sätze' };
 
     function openTab(tabId) {
       document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabId));
       document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === tabId));
-      updateHeroVisibility(tabId);
       const navTitle = document.getElementById('navTitle');
       if (navTitle) navTitle.textContent = NAV_TITLES[tabId] || tabId;
+      if (tabId === 'practice') renderPracticeHome();
+      if (tabId === 'library') renderLibrary();
+    }
+
+    // ─── Practice Flow ───────────────────────────────────────────────────
+
+    let practiceQueue = [];
+    let practiceIdx = 0;
+    let practiceTotal = 0;
+    let currentPracticeCard = null;
+
+    function renderPracticeHome() {
+      const due = dueCards(CONTENT);
+      const home = document.getElementById('practiceHome');
+      const active = document.getElementById('practiceActive');
+      const done = document.getElementById('practiceDone');
+      home.style.display = ''; active.style.display = 'none'; done.style.display = 'none';
+
+      // Update stats
+      const lvl = getLevelInfo();
+      const el = s => document.getElementById(s);
+      if (el('statXP')) el('statXP').textContent = `Lv${lvl.level}`;
+      if (el('statSeen')) el('statSeen').textContent = String(new Set(appState.seen).size);
+      if (el('statDue')) el('statDue').textContent = String(due.length);
+
+      // Status hero
+      const statusEl = document.getElementById('practiceStatus');
+      if (due.length > 0) {
+        statusEl.innerHTML = `
+          <div class="practice-due-count">${due.length}</div>
+          <div class="practice-due-label">${due.length === 1 ? 'Karte wartet' : 'Karten warten auf dich'}</div>
+          <button class="btn btn-primary primary" id="startPracticeBtn" style="min-width:180px;">Jetzt üben</button>`;
+        document.getElementById('startPracticeBtn').addEventListener('click', startPractice);
+      } else {
+        const next = CONTENT.map(c => getCardStats(c.id).dueAt).filter(t => t > now()).sort()[0];
+        const hoursUntil = next ? Math.round((next - now()) / 3600000) : null;
+        const nextLabel = hoursUntil != null ? (hoursUntil < 24 ? `in ${hoursUntil}h` : `in ${Math.round(hoursUntil/24)}d`) : 'bald';
+        statusEl.innerHTML = `
+          <div class="practice-allclear">✓</div>
+          <div class="practice-allclear-label">Alles wiederholt!</div>
+          <div class="practice-allclear-sub">Nächste Karte ${nextLabel}</div>
+          <button class="btn btn-ghost ghost" id="startPracticeBtn" style="margin-top:8px;">Trotzdem üben</button>`;
+        document.getElementById('startPracticeBtn').addEventListener('click', () => startPractice(true));
+      }
+
+      // Recent phrases from Tarkan
+      const recentSection = document.getElementById('recentSection');
+      const recentItems = CONTENT.filter(c => RECENT_IDS.includes(c.id));
+      if (recentItems.length > 0 && recentSection) {
+        recentSection.style.display = '';
+        const list = document.getElementById('recentList');
+        list.innerHTML = '';
+        recentItems.forEach(item => {
+          const el = document.createElement('div');
+          el.className = 'entry';
+          el.innerHTML = `<strong>${item.tr}</strong><small>${item.de} · ${item.category}</small>`;
+          const btn = document.createElement('button');
+          btn.className = 'btn btn-ghost ghost';
+          btn.style.cssText = 'margin-top:6px; font-size:14px; padding:6px 12px; min-height:36px;';
+          btn.textContent = '🔊';
+          btn.addEventListener('click', () => speakTurkish(item.tr));
+          el.appendChild(btn);
+          list.appendChild(el);
+        });
+      } else if (recentSection) {
+        recentSection.style.display = 'none';
+      }
+    }
+
+    function startPractice(useAll = false) {
+      const pool = useAll ? shuffle(CONTENT) : shuffle(dueCards(CONTENT));
+      if (pool.length === 0) return;
+      practiceQueue = pool;
+      practiceTotal = pool.length;
+      practiceIdx = 0;
+      document.getElementById('practiceHome').style.display = 'none';
+      document.getElementById('practiceActive').style.display = '';
+      document.getElementById('practiceDone').style.display = 'none';
+      showNextPracticeCard();
+    }
+
+    function showNextPracticeCard() {
+      if (practiceIdx >= practiceQueue.length) {
+        showPracticeDone(); return;
+      }
+      currentPracticeCard = practiceQueue[practiceIdx];
+      const stats = getCardStats(currentPracticeCard.id);
+      document.getElementById('practiceCategory').textContent = currentPracticeCard.category;
+      document.getElementById('practiceType').textContent = currentPracticeCard.type === 'satz' ? 'Satz' : 'Wort';
+      document.getElementById('practicePrompt').textContent = currentPracticeCard.de;
+      const answerEl = document.getElementById('practiceAnswer');
+      answerEl.innerHTML = `<strong>${currentPracticeCard.tr}</strong><br><span class="tiny">${currentPracticeCard.note}</span>`;
+      answerEl.classList.remove('visible');
+      document.getElementById('practiceRevealRow').style.display = '';
+      document.getElementById('practiceGradeRow').style.display = 'none';
+      markSeen(currentPracticeCard.id);
+      // Progress
+      const pct = (practiceIdx / practiceTotal) * 100;
+      document.getElementById('practiceProgressFill').style.width = pct + '%';
+      document.getElementById('practiceCounter').textContent = `${practiceIdx + 1} / ${practiceTotal}`;
+      if (CONFIG.tts.autoplay) speakTurkish(currentPracticeCard.tr);
+    }
+
+    function showPracticeAnswer() {
+      document.getElementById('practiceAnswer').classList.add('visible');
+      document.getElementById('practiceRevealRow').style.display = 'none';
+      document.getElementById('practiceGradeRow').style.display = '';
+    }
+
+    function gradePracticeCard(result) {
+      if (!currentPracticeCard) return;
+      const stats = getCardStats(currentPracticeCard.id);
+      const xpMap = { again: 0, hard: 5, good: 10, easy: 15 };
+      const interval = reviewIntervals[result] ?? reviewIntervals.hard;
+      const isWrong = result === 'again';
+      updateCardStats(currentPracticeCard.id, {
+        correct: isWrong ? stats.correct : stats.correct + 1,
+        wrong: isWrong ? stats.wrong + 1 : stats.wrong,
+        streak: isWrong ? 0 : stats.streak + 1,
+        dueAt: now() + interval,
+        lastSeen: now()
+      });
+      addXp(xpMap[result] ?? 0);
+      saveState();
+      practiceIdx++;
+      showNextPracticeCard();
+    }
+
+    function showPracticeDone() {
+      document.getElementById('practiceActive').style.display = 'none';
+      document.getElementById('practiceDone').style.display = '';
+      document.getElementById('practiceProgressFill').style.width = '100%';
+      const next = CONTENT.map(c => getCardStats(c.id).dueAt).filter(t => t > now()).sort()[0];
+      const hoursUntil = next ? Math.round((next - now()) / 3600000) : null;
+      const nextLabel = hoursUntil != null ? (hoursUntil < 24 ? `in ${hoursUntil}h` : `in ${Math.round(hoursUntil/24)}d`) : 'bald';
+      const doneNextEl = document.getElementById('doneNextLabel');
+      if (doneNextEl) doneNextEl.textContent = `Nächste Karte fällig: ${nextLabel}`;
     }
 
     function renderBadges() {
@@ -1659,70 +1737,32 @@
       });
     }
 
+    // Tab navigation
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', () => openTab(tab.dataset.tab));
     });
 
-    document.getElementById('showAnswerBtn').addEventListener('click', showReviewAnswer);
-    document.getElementById('nextCardBtn').addEventListener('click', nextReview);
-    document.getElementById('heroToggleBtn').addEventListener('click', () => {
-      appState.heroExpandedMobile = !appState.heroExpandedMobile;
-      saveState();
-      const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'today';
-      updateHeroVisibility(activeTab);
-    });
+    // Practice flow
+    document.getElementById('practiceRevealBtn').addEventListener('click', showPracticeAnswer);
+    document.getElementById('practiceSkipBtn').addEventListener('click', () => { practiceIdx++; showNextPracticeCard(); });
+    document.getElementById('practiceAgainBtn').addEventListener('click', () => gradePracticeCard('again'));
+    document.getElementById('practiceHardBtn').addEventListener('click', () => gradePracticeCard('hard'));
+    document.getElementById('practiceGoodBtn').addEventListener('click', () => gradePracticeCard('good'));
+    document.getElementById('practiceEasyBtn').addEventListener('click', () => gradePracticeCard('easy'));
+    document.getElementById('speakPracticeBtn').addEventListener('click', () => currentPracticeCard && speakTurkish(currentPracticeCard.tr));
+    document.getElementById('doneBrowseBtn').addEventListener('click', () => openTab('library'));
+
+    // Export/Import
     document.getElementById('exportBtn').addEventListener('click', exportProgress);
     document.getElementById('importBtn').addEventListener('click', importProgress);
-    document.getElementById('startDueBtn').addEventListener('click', () => {
-      const due = dueCards(CONTENT);
-      if (due.length) {
-        currentReview = due[0];
-        document.getElementById('reviewAnswer').classList.remove('visible');
-        document.getElementById('reviewGradeRow').style.display = 'none';
-        document.getElementById('reviewCategory').textContent = currentReview.category;
-        document.getElementById('reviewType').textContent = currentReview.type === 'satz' ? 'Satz' : 'Wort';
-        document.getElementById('reviewPrompt').textContent = currentReview.de;
-        document.getElementById('reviewAnswer').innerHTML = `<strong>${currentReview.tr}</strong><br><span class="tiny">${currentReview.note}</span>`;
-        markSeen(currentReview.id);
-        saveState();
-      } else {
-        nextReview();
-      }
-      openTab('review');
-    });
-    document.getElementById('refreshTodayBtn').addEventListener('click', renderToday);
-    document.getElementById('gradeAgainBtn').addEventListener('click', () => gradeReview('again'));
-    document.getElementById('gradeHardBtn').addEventListener('click', () => gradeReview('hard'));
-    document.getElementById('gradeGoodBtn').addEventListener('click', () => gradeReview('good'));
-    document.getElementById('gradeEasyBtn').addEventListener('click', () => gradeReview('easy'));
-    document.getElementById('speakReviewBtn').addEventListener('click', () => currentReview && speakTurkish(currentReview.tr));
-    document.getElementById('speakQuizBtn').addEventListener('click', () => currentQuiz && speakTurkish(currentQuiz.item.tr));
-    document.getElementById('nextQuizBtn').addEventListener('click', nextQuiz);
-    document.getElementById('checkWriteBtn').addEventListener('click', checkWrite);
-    document.getElementById('showWriteAnswerBtn').addEventListener('click', showWriteAnswer);
-    document.getElementById('speakWriteBtn').addEventListener('click', () => currentWrite && speakTurkish(currentWrite.tr));
-    document.getElementById('nextWriteBtn').addEventListener('click', nextWrite);
-    document.getElementById('writeInput').addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') checkWrite();
-    });
 
-    document.querySelectorAll('#trKeyboard button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const input = document.getElementById('writeInput');
-        const char = btn.dataset.char;
-        const start = input.selectionStart;
-        const end = input.selectionEnd;
-        input.value = input.value.slice(0, start) + char + input.value.slice(end);
-        input.selectionStart = input.selectionEnd = start + char.length;
-        input.focus();
-      });
-    });
-
+    // Speech
     if ('speechSynthesis' in window) {
       window.speechSynthesis.onvoiceschanged = () => {};
       window.speechSynthesis.getVoices();
     }
 
+    // Theme
     syncThemeColor();
     if (window.matchMedia) {
       const darkMedia = window.matchMedia('(prefers-color-scheme: dark)');
@@ -1730,18 +1770,10 @@
       else if (darkMedia.addListener) darkMedia.addListener(syncThemeColor);
     }
 
-    renderCategories();
     renderLibrary();
-    nextReview();
-    nextQuiz();
-    nextWrite();
     updateStats();
-    openTab('today');
+    openTab('practice');
     requestAnimationFrame(() => document.body.classList.add('loaded'));
-    window.addEventListener('resize', () => {
-      const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'today';
-      updateHeroVisibility(activeTab);
-    });
   </script>
 </body>
 </html>
