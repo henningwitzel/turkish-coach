@@ -695,6 +695,7 @@
           <div>
             <div class="tag-row"><span class="tag">Multiple Choice</span></div>
             <p class="question" id="quizQuestion">Lädt ...</p>
+            <button class="ghost" id="speakQuizBtn" style="margin-top:8px; font-size:0.9rem;">🔊 Anhören</button>
           </div>
           <div class="option-list" id="quizOptions"></div>
           <div class="feedback" id="quizFeedback"></div>
@@ -1169,6 +1170,7 @@
       answer.innerHTML = `<strong>${currentReview.tr}</strong><br><span class="tiny">${currentReview.note}</span>`;
       markSeen(currentReview.id);
       saveState();
+      if (CONFIG.tts.autoplay) speakTurkish(currentReview.tr);
     }
 
     function showReviewAnswer() {
@@ -1209,6 +1211,7 @@
       feedback.textContent = '';
       feedback.className = 'feedback';
       wrap.innerHTML = '';
+      if (CONFIG.tts.autoplay) speakTurkish(currentQuiz.item.tr);
       currentQuiz.options.forEach(option => {
         const btn = document.createElement('button');
         btn.className = 'option-btn';
@@ -1365,17 +1368,14 @@
     }
 
     function speakTurkish(text) {
-      if (!('speechSynthesis' in window)) {
-        alert('Dein Browser unterstützt leider keine Sprachausgabe.');
-        return;
-      }
+      if (!window.speechSynthesis) return;
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'tr-TR';
-      utterance.rate = 0.92;
+      utterance.lang = CONFIG.tts.lang;
+      utterance.rate = CONFIG.tts.rate;
       utterance.pitch = 1;
       const voices = window.speechSynthesis.getVoices();
-      const turkishVoice = voices.find(voice => voice.lang && voice.lang.toLowerCase().startsWith('tr'));
+      const turkishVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('tr'));
       if (turkishVoice) utterance.voice = turkishVoice;
       window.speechSynthesis.speak(utterance);
     }
@@ -1450,6 +1450,7 @@
     document.getElementById('gradeGoodBtn').addEventListener('click', () => gradeReview('good'));
     document.getElementById('gradeEasyBtn').addEventListener('click', () => gradeReview('easy'));
     document.getElementById('speakReviewBtn').addEventListener('click', () => currentReview && speakTurkish(currentReview.tr));
+    document.getElementById('speakQuizBtn').addEventListener('click', () => currentQuiz && speakTurkish(currentQuiz.item.tr));
     document.getElementById('nextQuizBtn').addEventListener('click', nextQuiz);
     document.getElementById('checkWriteBtn').addEventListener('click', checkWrite);
     document.getElementById('showWriteAnswerBtn').addEventListener('click', showWriteAnswer);
