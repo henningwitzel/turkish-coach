@@ -10,6 +10,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Tarkan Türkisch" />
   <title>Tarkan Türkisch Trainer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: light;
@@ -27,6 +30,9 @@
       --bad: #a33b2f;
       --shadow: 0 18px 50px rgba(131, 70, 34, 0.16);
       --radius: 24px;
+      --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
       --body-grad-1: radial-gradient(circle at top left, rgba(255,179,71,0.35), transparent 28%);
       --body-grad-2: radial-gradient(circle at top right, rgba(201,56,106,0.12), transparent 22%);
       --body-grad-3: linear-gradient(180deg, #fff9f3 0%, #fff2e4 42%, #ffe9d8 100%);
@@ -71,7 +77,7 @@
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif;
+      font-family: 'Barlow', "Avenir Next", "Segoe UI", system-ui, sans-serif;
       color: var(--text);
       background:
         var(--body-grad-1),
@@ -130,6 +136,10 @@
     }
 
     h1, h2, h3, p { margin: 0; }
+    h1, h2, h3, .prompt, .question {
+      font-family: var(--font-display);
+      font-kerning: normal;
+    }
     .hero h1 { font-size: clamp(2rem, 5vw, 3.3rem); line-height: 0.95; }
     .hero p {
       margin-top: 14px;
@@ -321,10 +331,17 @@
       font: inherit;
       font-weight: 700;
       cursor: pointer;
-      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+      transition: transform 0.12s var(--ease-out-expo), opacity 0.12s ease, background 0.15s ease;
     }
 
-    button.primary:hover, button.secondary:hover, button.ghost:hover, .option-btn:hover { transform: translateY(-1px); }
+    @media (hover: hover) {
+      button.primary:hover, button.secondary:hover, button.ghost:hover, .option-btn:hover { transform: translateY(-1px); }
+    }
+    button.primary:active, button.secondary:active, button.ghost:active, .option-btn:active {
+      transform: scale(0.96);
+      opacity: 0.88;
+      transition-duration: 0.06s;
+    }
 
     button.primary { background: var(--accent); color: white; }
     button.secondary {
@@ -333,6 +350,21 @@
       border: 1px solid var(--line);
     }
     button.ghost { background: var(--tag-bg); color: var(--text); }
+
+    #reviewGradeRow {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    #gradeAgainBtn { background: oklch(0.94 0.04 18); color: oklch(0.42 0.16 18); border: 1px solid oklch(0.88 0.07 18); }
+    #gradeHardBtn  { background: oklch(0.95 0.05 65); color: oklch(0.46 0.14 65); border: 1px solid oklch(0.89 0.08 65); }
+    #gradeGoodBtn  { background: oklch(0.94 0.05 145); color: oklch(0.40 0.13 145); border: 1px solid oklch(0.88 0.08 145); }
+    #gradeEasyBtn  { background: var(--accent); color: white; border: none; }
+    @media (prefers-color-scheme: dark) {
+      #gradeAgainBtn { background: oklch(0.28 0.06 18); color: oklch(0.78 0.12 18); border-color: oklch(0.34 0.08 18); }
+      #gradeHardBtn  { background: oklch(0.28 0.06 65); color: oklch(0.82 0.12 65); border-color: oklch(0.34 0.08 65); }
+      #gradeGoodBtn  { background: oklch(0.28 0.06 145); color: oklch(0.78 0.12 145); border-color: oklch(0.34 0.08 145); }
+    }
 
     .exercise-box {
       min-height: 350px;
@@ -503,28 +535,26 @@
 
     @media (max-width: 860px) {
       body {
-        padding-bottom: calc(92px + env(safe-area-inset-bottom));
+        padding-bottom: calc(88px + env(safe-area-inset-bottom));
       }
       .wrap {
-        width: min(100%, calc(100% - 18px));
-        padding: calc(18px + env(safe-area-inset-top)) 0 26px;
+        width: min(100%, calc(100% - 20px));
+        padding: calc(16px + env(safe-area-inset-top)) 0 24px;
       }
       .grid { grid-template-columns: 1fr; }
+
+      /* Hero — compact strip on mobile */
       .hero {
-        padding: 18px;
-        border-radius: 24px;
+        padding: 16px 18px;
+        border-radius: 20px;
         margin-bottom: 12px;
       }
-      .hero h1 {
-        font-size: 1.9rem;
-      }
-      .hero p {
-        font-size: 0.94rem;
-        margin-top: 8px;
-      }
+      .hero h1 { font-size: 1.6rem; }
+      .hero p { display: none; }
       .hero-stats {
-        margin-top: 14px;
+        margin-top: 10px;
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
       }
       .hero-toggle {
         display: inline-flex;
@@ -532,55 +562,94 @@
         justify-content: center;
       }
       .hero.is-collapsed .hero-copy,
-      .hero.is-collapsed .hero-stats {
-        display: none;
+      .hero.is-collapsed .hero-stats { display: none; }
+      .hero.is-collapsed { padding: 14px 18px; }
+      .pill { padding: 10px 12px; }
+      .pill .value { font-size: 1.05rem; }
+
+      /* Panels */
+      .panel { padding: 0; scroll-margin-top: 12px; }
+      .panel-title { margin-bottom: 12px; padding: 0 2px; }
+      .panel-title h2 { font-size: 1.8rem; letter-spacing: -0.02em; }
+      .panel-title p { font-size: 0.875rem; margin-top: 4px; }
+      .card { padding: 16px; border-radius: 20px; }
+
+      /* Flashcard — primary interaction, give it space */
+      .flashcard {
+        min-height: max(56vh, 320px);
+        padding: 20px;
+        border-radius: 24px;
       }
-      .hero.is-collapsed {
-        padding: 16px 18px;
+      .prompt {
+        font-size: 2rem;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
       }
-      .pill {
+      .answer {
+        font-size: 1rem;
         padding: 12px 14px;
       }
-      .panel { padding: 16px; scroll-margin-top: 12px; }
-      .panel-title {
-        margin-bottom: 14px;
-      }
-      .panel-title h2 {
-        font-size: 1.65rem;
-      }
-      .panel-title p {
-        font-size: 0.92rem;
-      }
-      .card { padding: 16px; }
+
+      /* Quiz question */
+      .question { font-size: 1.5rem; letter-spacing: -0.01em; }
+
+      /* Tab bar — solid, confident */
       .tabs {
         position: fixed;
-        left: 10px;
-        right: 10px;
-        bottom: calc(10px + env(safe-area-inset-bottom));
+        left: 0;
+        right: 0;
+        bottom: 0;
         top: auto;
         margin: 0;
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        gap: 8px;
-        border-radius: 24px;
-        border: 1px solid var(--line);
-        box-shadow: var(--shadow);
+        gap: 0;
+        border-radius: 0;
+        border: none;
+        border-top: 1px solid var(--line);
+        box-shadow: 0 -1px 0 var(--line), 0 -8px 24px rgba(0,0,0,0.06);
+        padding: 8px 4px max(12px, env(safe-area-inset-bottom)) 4px;
+        background: var(--panel-strong);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
       }
       .tab {
-        min-height: 62px;
-        padding: 8px 6px;
-        border-radius: 18px;
-        font-size: 0.76rem;
-        line-height: 1.05;
+        min-height: 52px;
+        padding: 6px 4px;
+        border-radius: 14px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        line-height: 1.1;
         text-align: center;
         flex-direction: column;
-        gap: 5px;
+        gap: 4px;
+        color: var(--muted);
+        background: transparent;
+      }
+      .tab.active {
+        color: var(--accent);
+        background: color-mix(in oklch, var(--accent) 10%, transparent);
       }
       .tab-icon {
-        font-size: 1.08rem;
+        font-size: 1.2rem;
       }
       textarea.transfer {
         min-height: 120px;
+      }
+    }
+
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .panel.active {
+      animation: panelIn 180ms var(--ease-out-expo) both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
       }
     }
   </style>
