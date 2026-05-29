@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#e6532d" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#221917" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Tarkan Türkisch" />
+  <title>Tarkan Türkisch Trainer</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #fff8f1;
+      --bg-2: #ffe8d0;
+      --panel: rgba(255,255,255,0.84);
+      --panel-strong: rgba(255,255,255,0.94);
+      --text: #2b1b14;
+      --muted: #7c6458;
+      --line: rgba(122, 72, 35, 0.12);
+      --accent: #e6532d;
+      --accent-2: #ffb347;
+      --accent-3: #c9386a;
+      --good: #227c49;
+      --bad: #a33b2f;
+      --shadow: 0 18px 50px rgba(131, 70, 34, 0.16);
+      --radius: 24px;
+      --body-grad-1: radial-gradient(circle at top left, rgba(255,179,71,0.35), transparent 28%);
+      --body-grad-2: radial-gradient(circle at top right, rgba(201,56,106,0.12), transparent 22%);
+      --body-grad-3: linear-gradient(180deg, #fff9f3 0%, #fff2e4 42%, #ffe9d8 100%);
+      --hero-grad: linear-gradient(135deg, rgba(230,83,45,0.96), rgba(255,179,71,0.96));
+      --flashcard-grad: linear-gradient(160deg, rgba(255,255,255,0.98), rgba(255,242,228,0.95));
+      --tag-bg: #fff1e1;
+      --tag-text: #8c5227;
+      --answer-bg: #fff7ef;
+      --tabs-bg: rgba(255, 248, 241, 0.72);
+      --input-bg: #ffffff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color-scheme: dark;
+        --bg: #1c1412;
+        --bg-2: #2a1d19;
+        --panel: rgba(34, 25, 23, 0.86);
+        --panel-strong: rgba(43, 31, 28, 0.96);
+        --text: #f8ebe0;
+        --muted: #d0b5a5;
+        --line: rgba(255, 219, 191, 0.12);
+        --accent: #ff7a52;
+        --accent-2: #f2b15d;
+        --accent-3: #de6b96;
+        --good: #68d39a;
+        --bad: #ff8f7f;
+        --shadow: 0 22px 54px rgba(0, 0, 0, 0.34);
+        --body-grad-1: radial-gradient(circle at top left, rgba(255,122,82,0.18), transparent 28%);
+        --body-grad-2: radial-gradient(circle at top right, rgba(222,107,150,0.14), transparent 24%);
+        --body-grad-3: linear-gradient(180deg, #171110 0%, #201715 42%, #2a1d19 100%);
+        --hero-grad: linear-gradient(135deg, rgba(120,47,31,0.96), rgba(191,117,54,0.96));
+        --flashcard-grad: linear-gradient(160deg, rgba(47, 34, 31, 0.98), rgba(36, 26, 24, 0.96));
+        --tag-bg: rgba(255, 179, 133, 0.12);
+        --tag-text: #ffd7bb;
+        --answer-bg: rgba(255,255,255,0.04);
+        --tabs-bg: rgba(28, 20, 18, 0.82);
+        --input-bg: rgba(255,255,255,0.06);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        var(--body-grad-1),
+        var(--body-grad-2),
+        var(--body-grad-3);
+      min-height: 100vh;
+      padding-bottom: max(18px, env(safe-area-inset-bottom));
+    }
+
+    .wrap {
+      width: min(1100px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: max(28px, env(safe-area-inset-top)) 0 40px;
+    }
+
+    .hero {
+      background: var(--hero-grad);
+      color: white;
+      border-radius: 32px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      transition: opacity 0.22s ease, transform 0.22s ease, margin 0.22s ease, max-height 0.22s ease;
+    }
+
+    .hero-copy {
+      display: block;
+    }
+
+    .hero-toggle {
+      display: none;
+      margin-top: 14px;
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.18);
+      color: white;
+      font: inherit;
+      font-weight: 700;
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+    }
+
+    .hero.is-hidden-mobile {
+      display: none;
+    }
+
+    .hero::after {
+      content: "🇹🇷";
+      position: absolute;
+      right: 24px;
+      top: 18px;
+      font-size: 42px;
+      opacity: 0.22;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.3rem); line-height: 0.95; }
+    .hero p {
+      margin-top: 14px;
+      max-width: 680px;
+      color: rgba(255,255,255,0.9);
+      font-size: 1.02rem;
+      line-height: 1.5;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .pill {
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.24);
+      border-radius: 18px;
+      padding: 14px 16px;
+      backdrop-filter: blur(12px);
+    }
+
+    .pill .label { font-size: 0.78rem; opacity: 0.86; text-transform: uppercase; letter-spacing: 0.08em; }
+    .pill .value { margin-top: 6px; font-size: 1.2rem; font-weight: 700; }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0 22px;
+      position: sticky;
+      top: 10px;
+      z-index: 5;
+      padding: 8px;
+      border-radius: 22px;
+      background: var(--tabs-bg);
+      backdrop-filter: blur(12px);
+    }
+
+    .tab {
+      border: 0;
+      cursor: pointer;
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: color-mix(in oklab, var(--panel-strong) 86%, transparent);
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+      box-shadow: 0 6px 20px rgba(131, 70, 34, 0.08);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .tab-icon {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .tab-label {
+      line-height: 1;
+    }
+
+    .tab.active {
+      background: linear-gradient(135deg, var(--accent), color-mix(in oklab, var(--accent-2) 72%, var(--accent) 28%));
+      color: white;
+    }
+
+    .panel {
+      display: none;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      backdrop-filter: blur(14px);
+    }
+
+    .panel.active { display: block; }
+
+    .panel-title {
+      margin-bottom: 18px;
+    }
+
+    .panel-title h2 {
+      font-size: clamp(1.55rem, 4vw, 2.2rem);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .panel-title p {
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+    }
+
+    .card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 10px;
+    }
+
+    .muted { color: var(--muted); line-height: 1.5; }
+
+    .flashcard {
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      background: var(--flashcard-grad);
+    }
+
+    .tag-row, .category-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag, .chip {
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      border: 1px solid rgba(140,82,39,0.12);
+    }
+
+    .chip {
+      cursor: pointer;
+      background: var(--input-bg);
+    }
+
+    .chip.active {
+      background: #2b1b14;
+      color: white;
+    }
+
+    .prompt {
+      font-size: clamp(1.7rem, 5vw, 2.8rem);
+      line-height: 1.05;
+      font-weight: 800;
+    }
+
+    .answer {
+      display: none;
+      padding: 14px;
+      border-radius: 18px;
+      background: var(--answer-bg);
+      border: 1px dashed rgba(140,82,39,0.2);
+      line-height: 1.6;
+    }
+
+    .answer.visible { display: block; }
+
+    .actions, .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .helper-bar {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button.primary, button.secondary, button.ghost, .option-btn {
+      border: 0;
+      border-radius: 16px;
+      padding: 12px 14px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+    }
+
+    button.primary:hover, button.secondary:hover, button.ghost:hover, .option-btn:hover { transform: translateY(-1px); }
+
+    button.primary { background: var(--accent); color: white; }
+    button.secondary {
+      background: color-mix(in oklab, var(--panel-strong) 72%, white 28%);
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+    button.ghost { background: var(--tag-bg); color: var(--text); }
+
+    .exercise-box {
+      min-height: 350px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .question {
+      font-size: 1.35rem;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .option-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .option-btn {
+      background: var(--input-bg);
+      color: var(--text);
+      text-align: left;
+      border: 1px solid var(--line);
+    }
+
+    .option-btn.correct { background: rgba(34,124,73,0.14); color: var(--good); }
+    .option-btn.wrong { background: rgba(163,59,47,0.12); color: var(--bad); }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(122,72,35,0.16);
+      font: inherit;
+      background: var(--input-bg);
+      color: var(--text);
+    }
+
+    .feedback {
+      min-height: 28px;
+      font-weight: 700;
+    }
+
+    .feedback.good { color: var(--good); }
+    .feedback.bad { color: var(--bad); }
+
+    .list {
+      display: grid;
+      gap: 12px;
+      max-height: 620px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .today-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .badge-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+
+    .badge {
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: color-mix(in oklab, var(--panel-strong) 88%, transparent);
+    }
+
+    .badge.locked {
+      opacity: 0.55;
+    }
+
+    .badge-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .transfer-box {
+      display: grid;
+      gap: 10px;
+    }
+
+    textarea.transfer {
+      width: 100%;
+      min-height: 140px;
+      resize: vertical;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(122,72,35,0.16);
+      font: inherit;
+      background: var(--input-bg);
+      color: var(--text);
+    }
+
+    .today-highlight {
+      background: linear-gradient(135deg, color-mix(in oklab, var(--accent) 16%, var(--panel-strong) 84%), color-mix(in oklab, var(--accent-2) 14%, var(--panel-strong) 86%));
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+    }
+
+    .entry {
+      padding: 14px;
+      background: var(--panel-strong);
+      border-radius: 18px;
+      border: 1px solid var(--line);
+    }
+
+    .entry strong { display: block; font-size: 1.03rem; }
+    .entry small { color: var(--muted); display: block; margin-top: 5px; line-height: 1.5; }
+
+    .scorebar {
+      height: 12px;
+      border-radius: 999px;
+      background: color-mix(in oklab, var(--tag-bg) 78%, transparent);
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .scorefill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-3));
+      border-radius: inherit;
+      transition: width 0.3s ease;
+    }
+
+    .tiny { font-size: 0.84rem; color: var(--muted); line-height: 1.45; }
+
+    .install-card {
+      margin-top: 16px;
+      background: linear-gradient(135deg, color-mix(in oklab, var(--panel-strong) 90%, white 10%), color-mix(in oklab, var(--tag-bg) 85%, var(--panel-strong) 15%));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 14px;
+    }
+
+    @media (max-width: 860px) {
+      body {
+        padding-bottom: calc(92px + env(safe-area-inset-bottom));
+      }
+      .wrap {
+        width: min(100%, calc(100% - 18px));
+        padding: calc(18px + env(safe-area-inset-top)) 0 26px;
+      }
+      .grid { grid-template-columns: 1fr; }
+      .hero {
+        padding: 18px;
+        border-radius: 24px;
+        margin-bottom: 12px;
+      }
+      .hero h1 {
+        font-size: 1.9rem;
+      }
+      .hero p {
+        font-size: 0.94rem;
+        margin-top: 8px;
+      }
+      .hero-stats {
+        margin-top: 14px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .hero-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .hero.is-collapsed .hero-copy,
+      .hero.is-collapsed .hero-stats {
+        display: none;
+      }
+      .hero.is-collapsed {
+        padding: 16px 18px;
+      }
+      .pill {
+        padding: 12px 14px;
+      }
+      .panel { padding: 16px; scroll-margin-top: 12px; }
+      .panel-title {
+        margin-bottom: 14px;
+      }
+      .panel-title h2 {
+        font-size: 1.65rem;
+      }
+      .panel-title p {
+        font-size: 0.92rem;
+      }
+      .card { padding: 16px; }
+      .tabs {
+        position: fixed;
+        left: 10px;
+        right: 10px;
+        bottom: calc(10px + env(safe-area-inset-bottom));
+        top: auto;
+        margin: 0;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        border-radius: 24px;
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+      }
+      .tab {
+        min-height: 62px;
+        padding: 8px 6px;
+        border-radius: 18px;
+        font-size: 0.76rem;
+        line-height: 1.05;
+        text-align: center;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .tab-icon {
+        font-size: 1.08rem;
+      }
+      textarea.transfer {
+        min-height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero" id="heroSection">
+      <h1>Tarkan Türkisch Trainer</h1>
+      <div class="hero-copy">
+        <p>Dein spielerischer Berlin-zu-Familientisch-Spickzettel. Wiederholen, laut sprechen, Mini-Übungen machen und jeden Tag ein bisschen sicherer werden.</p>
+        <div class="hero-stats">
+          <div class="pill"><div class="label">Gelernte Karten</div><div class="value" id="statCards">0</div></div>
+          <div class="pill"><div class="label">Quiz-Treffer</div><div class="value" id="statQuiz">0%</div></div>
+          <div class="pill"><div class="label">Schreibübungen</div><div class="value" id="statWrite">0%</div></div>
+          <div class="pill"><div class="label">Level / XP</div><div class="value" id="statMood">Lv1 · 0 XP</div></div>
+        </div>
+      </div>
+      <button class="hero-toggle" id="heroToggleBtn">Mehr anzeigen</button>
+    </section>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="today"><span class="tab-icon">☀️</span><span class="tab-label">Heute</span></button>
+      <button class="tab" data-tab="review"><span class="tab-icon">🃏</span><span class="tab-label">Karten</span></button>
+      <button class="tab" data-tab="quiz"><span class="tab-icon">✅</span><span class="tab-label">Quiz</span></button>
+      <button class="tab" data-tab="write"><span class="tab-icon">✍️</span><span class="tab-label">Schreiben</span></button>
+      <button class="tab" data-tab="library"><span class="tab-icon">📚</span><span class="tab-label">Sätze</span></button>
+    </div>
+
+    <section class="panel active" id="today">
+      <div class="panel-title">
+        <h2>Heute</h2>
+        <p>Dein täglicher Startpunkt mit fälligen Karten und dem sinnvollsten nächsten Schritt.</p>
+      </div>
+      <div class="grid">
+        <div class="today-stack">
+          <div class="today-highlight">
+            <h3 style="margin-bottom:8px;">Heute dran</h3>
+            <p class="muted" id="todaySummary">Lädt ...</p>
+            <div class="helper-bar">
+              <button class="primary" id="startDueBtn">Fällige Karten starten</button>
+              <button class="ghost" id="refreshTodayBtn">Aktualisieren</button>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Fällige Karten</h3>
+            <div class="list" id="todayDueList"></div>
+          </div>
+          <div class="card">
+            <h3>Kleine Erfolge</h3>
+            <div class="badge-grid" id="badgeGrid"></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Heute sinnvoll</h3>
+          <p class="muted">Erst die fälligen Karten, dann 2–3 Schreibübungen. So bleibt dein Stoff warm, ohne dass du dich verzettelst.</p>
+          <div class="card" style="margin-top:16px; background:color-mix(in oklab, var(--panel-strong) 85%, var(--tag-bg) 15%);">
+            <h3 style="margin-bottom:8px;">Mini-Plan</h3>
+            <p class="tiny">1. Heute-Ansicht öffnen.<br>2. Fällige Karten kurz durchgehen.<br>3. 1 schwierige Stelle bewusst laut sprechen.<br>4. Fertig.</p>
+          </div>
+          <div class="card" style="margin-top:16px; background:color-mix(in oklab, var(--panel-strong) 85%, var(--tag-bg) 15%);">
+            <h3 style="margin-bottom:8px;">Lernstand sichern</h3>
+            <div class="transfer-box">
+              <div class="button-row">
+                <button class="ghost" id="exportBtn">Exportieren</button>
+                <button class="ghost" id="importBtn">Importieren</button>
+              </div>
+              <textarea class="transfer" id="transferData" placeholder="Hier erscheint dein Export — oder füge hier einen Import ein."></textarea>
+              <div class="feedback" id="transferFeedback"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="review">
+      <div class="panel-title">
+        <h2>Karten</h2>
+        <p>Wiederholen, laut sprechen und direkt markieren, ob ein Satz sitzt oder nochmal drankommen soll.</p>
+      </div>
+      <div class="grid">
+        <div class="card flashcard">
+          <div>
+            <div class="tag-row">
+              <span class="tag" id="reviewCategory">Kategorie</span>
+              <span class="tag" id="reviewType">Typ</span>
+            </div>
+            <p class="tiny" style="margin-top:12px;">Dreh die Karte erst im Kopf um, dann laut sagen.</p>
+            <div class="prompt" id="reviewPrompt">Lädt ...</div>
+            <div class="helper-bar">
+              <button class="ghost" id="speakReviewBtn">🔊 Aussprache</button>
+              <span class="tiny">spricht den türkischen Satz laut vor</span>
+            </div>
+          </div>
+          <div>
+            <div class="answer" id="reviewAnswer"></div>
+            <div class="actions" style="margin-top:14px;">
+              <button class="primary" id="showAnswerBtn">Antwort zeigen</button>
+              <button class="secondary" id="nextCardBtn">Nächste Karte</button>
+            </div>
+            <div class="actions" id="reviewGradeRow" style="margin-top:10px; display:none;">
+              <button class="ghost" id="gradeHardBtn">Nochmal üben</button>
+              <button class="ghost" id="gradeEasyBtn">Saß gut</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Filter</h3>
+          <p class="muted" style="margin-bottom:12px;">Fokussiere dich auf Tischsätze, Familie, Selbstvorstellung oder Wünsche.</p>
+          <div class="category-row" id="categoryFilters"></div>
+          <div class="scorebar"><div class="scorefill" id="progressFill"></div></div>
+          <p class="tiny" id="progressText" style="margin-top:10px;">0 von 0 Karten angesehen</p>
+          <p class="tiny" id="dueText" style="margin-top:6px;">0 Karten gerade fällig</p>
+          <div class="card" style="margin-top:16px; background:color-mix(in oklab, var(--panel-strong) 85%, var(--tag-bg) 15%);">
+            <h3 style="margin-bottom:8px;">So nutzt du die Seite am besten</h3>
+            <p class="tiny">1. Erst im Kopf antworten.<br>2. Dann laut sprechen.<br>3. Danach Quiz oder Schreiben machen.<br>4. Täglich 10 Minuten reichen völlig.</p>
+          </div>
+          <div class="install-card">
+            <h3 style="margin-bottom:8px;">iPhone-Tipp</h3>
+            <p class="tiny">In Safari auf <strong>Teilen</strong> → <strong>Zum Home-Bildschirm</strong>. Dann fühlt sich die Seite viel mehr wie eine kleine App an.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="quiz">
+      <div class="panel-title">
+        <h2>Quiz</h2>
+        <p>Schneller Abruf für Bedeutungen und Reaktionen — gut für Tempo und Sicherheit.</p>
+      </div>
+      <div class="grid">
+        <div class="card exercise-box">
+          <div>
+            <div class="tag-row"><span class="tag">Multiple Choice</span></div>
+            <p class="question" id="quizQuestion">Lädt ...</p>
+          </div>
+          <div class="option-list" id="quizOptions"></div>
+          <div class="feedback" id="quizFeedback"></div>
+          <div class="button-row">
+            <button class="secondary" id="nextQuizBtn">Nächste Frage</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Warum das hilft</h3>
+          <p class="muted">Multiple Choice ist gut, um Bedeutungen schnell wieder anzuknipsen. Es ersetzt nicht das Sprechen — aber es macht den Abruf schneller.</p>
+          <div class="card" style="margin-top:16px; background:color-mix(in oklab, var(--panel-strong) 85%, var(--tag-bg) 15%);">
+            <h3 style="margin-bottom:8px;">Dein Fokus</h3>
+            <p class="tiny">Gerade wichtig für dich: <strong>bunu / şunu</strong>, <strong>-yi</strong>, Tischsätze und Selbstvorstellung.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="write">
+      <div class="panel-title">
+        <h2>Schreiben</h2>
+        <p>Hier wird aus Wiedererkennen echtes Formulieren. Kleine Fehler sind okay — Hauptsache sauberer Satzbau.</p>
+      </div>
+      <div class="grid">
+        <div class="card exercise-box">
+          <div>
+            <div class="tag-row"><span class="tag">Schreibübung</span></div>
+            <p class="question" id="writeQuestion">Lädt ...</p>
+          </div>
+          <input type="text" id="writeInput" placeholder="Deine türkische Antwort ..." autocomplete="off" />
+          <div class="button-row">
+            <button class="primary" id="checkWriteBtn">Prüfen</button>
+            <button class="ghost" id="showWriteAnswerBtn">Lösung zeigen</button>
+            <button class="secondary" id="nextWriteBtn">Nächste Übung</button>
+          </div>
+          <div class="feedback" id="writeFeedback"></div>
+        </div>
+        <div class="card">
+          <h3>Schreib-Regel</h3>
+          <p class="muted">Schreib erst sauber, dann schnell. Türkisch belohnt genaue Formen: <strong>şunu</strong>, <strong>bunu</strong>, <strong>Firuze’yi</strong>, <strong>eşimi</strong>.</p>
+          <div class="card" style="margin-top:16px; background:color-mix(in oklab, var(--panel-strong) 85%, var(--tag-bg) 15%);">
+            <h3 style="margin-bottom:8px;">Kleiner Trick</h3>
+            <p class="tiny">Wenn du hängst: erst das türkische Satzmuster denken, dann das einzelne Wort suchen.</p>
+            <div class="helper-bar" style="margin-top:10px;">
+              <button class="ghost" id="speakWriteBtn">🔊 Lösung anhören</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="library">
+      <div class="panel-title">
+        <h2>Sätze</h2>
+        <p>Deine Kernbausteine für Familie, Tisch, Wünsche und kleine echte Gespräche.</p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>Deine Kernsätze</h3>
+          <div class="list" id="sentenceList"></div>
+        </div>
+        <div class="card">
+          <h3>Wortbank</h3>
+          <div class="list" id="wordList"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const CONTENT = [
+      { id: 's1', category: 'Selbstvorstellung', type: 'satz', de: 'Hallo, ich bin Henning.', tr: 'Merhaba, ben Henning’im.', note: 'Einfacher, natürlicher Start.' },
+      { id: 's2', category: 'Selbstvorstellung', type: 'satz', de: 'Ich lebe in Berlin.', tr: 'Berlin’de yaşıyorum.', note: 'Mit Ort + Verb.' },
+      { id: 's3', category: 'Selbstvorstellung', type: 'satz', de: 'Ich bin Designer.', tr: 'Tasarımcıyım.', note: 'Dein Berufssatz.' },
+      { id: 's4', category: 'Familie', type: 'satz', de: 'Meine Schwiegermutter ist sehr nett.', tr: 'Kayınvalidem çok nazik.', note: 'Starker Familiensatz.' },
+      { id: 's5', category: 'Familie', type: 'satz', de: 'Ich liebe Firuze sehr.', tr: 'Firuze’yi çok seviyorum.', note: 'Wichtig: -yi Objektform.' },
+      { id: 's6', category: 'Familie', type: 'satz', de: 'Ich liebe meine Frau sehr.', tr: 'Eşimi çok seviyorum.', note: 'Wichtig: eşimi, nicht eşim’yi.' },
+      { id: 's7', category: 'Tisch', type: 'satz', de: 'Das Essen ist sehr gut.', tr: 'Yemek çok güzel.', note: 'Natürlicher als çok iyi.' },
+      { id: 's8', category: 'Tisch', type: 'satz', de: 'Danke fürs Essen.', tr: 'Elinize sağlık.', note: 'Goldsatz bei der Familie.' },
+      { id: 's9', category: 'Tisch', type: 'satz', de: 'Guten Appetit.', tr: 'Afiyet olsun.', note: 'Vor oder beim Essen.' },
+      { id: 's10', category: 'Tisch', type: 'satz', de: 'Noch ein bisschen, bitte.', tr: 'Biraz daha lütfen.', note: 'Nützlich am Tisch.' },
+      { id: 's11', category: 'Tisch', type: 'satz', de: 'Ich bin satt, danke.', tr: 'Doydum, teşekkür ederim.', note: 'Auch mit teşekkürler möglich.' },
+      { id: 's12', category: 'Wünsche', type: 'satz', de: 'Ich möchte Tee.', tr: 'Çay istiyorum.', note: 'Klar und praktisch.' },
+      { id: 's13', category: 'Wünsche', type: 'satz', de: 'Ich möchte keinen Kaffee.', tr: 'Kahve istemiyorum.', note: 'Nicht wollen = istemiyorum.' },
+      { id: 's14', category: 'Wünsche', type: 'satz', de: 'Ich möchte das nicht.', tr: 'Bunu istemiyorum.', note: 'bunu = das hier als Objekt.' },
+      { id: 's15', category: 'Wünsche', type: 'satz', de: 'Das da will ich.', tr: 'Şunu istiyorum.', note: 'şunu = das da.' },
+      { id: 's16', category: 'Zahlen', type: 'satz', de: 'Wir sind vier Personen.', tr: 'Biz dört kişiyiz.', note: 'Nützlich bei Reservierungen.' },
+      { id: 's17', category: 'Fragewörter', type: 'satz', de: 'Was ist das?', tr: 'Bu ne?', note: 'Dein erster Was?-Satz.' },
+      { id: 's18', category: 'Fragewörter', type: 'satz', de: 'Wo ist Firuze?', tr: 'Firuze nerede?', note: 'Superpraktisch.' },
+      { id: 's19', category: 'Fragewörter', type: 'satz', de: 'Wer ist das?', tr: 'Bu kim?', note: 'Direkt familiennützlich.' },
+      { id: 's20', category: 'Fragewörter', type: 'satz', de: 'Wie viele Personen sind wir?', tr: 'Kaç kişiyiz?', note: 'Passt zu Zahlen.' },
+      { id: 's21', category: 'Familie', type: 'satz', de: 'Wer ist das? Das ist meine Schwiegermutter.', tr: 'Bu kim? Bu kayınvalidem.', note: 'Frage + Familienvorstellung zusammen.' },
+      { id: 's22', category: 'Familie', type: 'satz', de: 'Meine Frau lebt in Berlin.', tr: 'Eşim Berlin’de yaşıyor.', note: 'Wichtiger Familiensatz mit richtiger Verbperson.' },
+      { id: 's23', category: 'Loben', type: 'satz', de: 'Sehr schön.', tr: 'Çok güzel.', note: 'Dein Standard-Kompliment.' },
+      { id: 's24', category: 'Loben', type: 'satz', de: 'Großartig!', tr: 'Harika!', note: 'Etwas stärker.' },
+      { id: 's25', category: 'Loben', type: 'satz', de: 'Das Essen ist großartig, sehr lecker.', tr: 'Yemek harika, çok lezzetli.', note: 'Wärmeres Tischlob.' },
+      { id: 's26', category: 'Loben', type: 'satz', de: 'Wunderbar!', tr: 'Muhteşem!', note: 'Mit Gefühl, aber sparsam.' },
+      { id: 's27', category: 'Nuri', type: 'satz', de: 'Wir freuen uns auf Nuri.', tr: 'Nuri için çok heyecanlıyız.', note: 'Vorfreude ausdrücken.' },
+      { id: 's28', category: 'Nuri', type: 'satz', de: 'Das Baby ist sehr süß.', tr: 'Bebek çok tatlı.', note: 'Praktischer Familiensatz.' },
+      { id: 's29', category: 'Nuri', type: 'satz', de: 'Das ist unser Baby.', tr: 'Bu bebeğimiz.', note: 'Wichtiger Familiensatz mit unser.' },
+      { id: 's30', category: 'Nuri', type: 'satz', de: 'Sein Name wird Nuri sein.', tr: 'Adı Nuri olacak.', note: 'Natürlich für kommende Vorstellungen.' },
+      { id: 's31', category: 'Nuri', type: 'satz', de: 'Wir sind sehr glücklich.', tr: 'Çok mutluyuz.', note: 'Einfacher Gefühlssatz.' },
+      { id: 's32', category: 'Verstehen', type: 'satz', de: 'Ich verstehe.', tr: 'Anlıyorum.', note: 'Ganz wichtig.' },
+      { id: 's33', category: 'Verstehen', type: 'satz', de: 'Ich verstehe nicht.', tr: 'Anlamıyorum.', note: 'Lieber ehrlich als raten.' },
+      { id: 's34', category: 'Verstehen', type: 'satz', de: 'Kannst du das wiederholen?', tr: 'Tekrar eder misin?', note: 'Informell, familientauglich.' },
+      { id: 's35', category: 'Verstehen', type: 'satz', de: 'Langsamer, bitte.', tr: 'Yavaş lütfen.', note: 'Kurz, klar, nützlich.' },
+      { id: 's36', category: 'Abschluss', type: 'satz', de: 'Sind wir für heute fertig?', tr: 'Bugün işimiz bitti mi?', note: 'Praktischer Abschlusssatz für unsere Routine.' },
+      { id: 's37', category: 'Abschluss', type: 'satz', de: 'Ja, wir sind für heute fertig.', tr: 'Evet, bugün işimiz bitti.', note: 'Natürliche Antwort auf die Abschlussfrage.' },
+      { id: 's38', category: 'Abschluss', type: 'satz', de: 'Bis morgen.', tr: 'Yarın görüşürüz.', note: 'Nützlicher Verabschiedungssatz.' },
+      { id: 's39', category: 'Alltag', type: 'satz', de: 'Komm, setz dich bitte.', tr: 'Gel, otur lütfen.', note: 'Kurzer, natürlicher Alltagssatz.' },
+      { id: 's40', category: 'Familie', type: 'satz', de: 'Schau, das ist unser Baby.', tr: 'Bak, bu bizim bebeğimiz.', note: 'Praktisch beim Zeigen und Vorstellen.' },
+      { id: 's41', category: 'Familie', type: 'satz', de: 'Schau, das ist meine Schwiegermutter.', tr: 'Bak, bu kayınvalidem.', note: 'Zeigen + Familienwort zusammen.' },
+      { id: 's42', category: 'Familie', type: 'satz', de: 'Hallo Tante, freut mich.', tr: 'Merhaba teyze, memnun oldum.', note: 'Warm und sehr brauchbar bei Verwandtschaft.' },
+      { id: 's43', category: 'Familie', type: 'satz', de: 'Hallo Onkel, wie geht es Ihnen?', tr: 'Merhaba amca, nasılsınız?', note: 'Höfliche Begrüßung für ältere Verwandte.' },
+      { id: 's44', category: 'Survival', type: 'satz', de: 'Mein Türkisch ist nicht sehr gut, aber ich lerne.', tr: 'Türkçem çok iyi değil ama öğreniyorum.', note: 'Nimmt Druck raus und klingt sympathisch.' },
+      { id: 's45', category: 'Immersion', type: 'satz', de: 'Ich habe Sie vermisst.', tr: 'Sizi özledim.', note: 'Was Türken beim Wiedersehen tatsächlich sagen (Firuze-Korrektur, 29.05). Lehrbuch-Satz „Seni tekrar görmek çok güzel" klingt unnatürlich.' },
+      { id: 's46', category: 'Immersion', type: 'satz', de: 'Das Essen war sehr gut.', tr: 'Yemek çok güzeldi.', note: 'Einfacher Rückblick nach dem Essen.' },
+      { id: 's47', category: 'Immersion', type: 'satz', de: 'Das ist sehr schön geworden.', tr: 'Bu çok güzel olmuş.', note: 'Natürliches Lob für Essen, Deko oder Vorbereitung.' },
+      { id: 's48', category: 'Immersion', type: 'satz', de: 'Das Essen ist sehr gut geworden.', tr: 'Yemek çok güzel olmuş.', note: 'Sehr familientaugliches Tischlob.' },
+      { id: 's49', category: 'Immersion', type: 'satz', de: 'Vielen Dank, das ist sehr schön geworden.', tr: 'Teşekkür ederim, bu çok güzel olmuş.', note: 'Dank + Lob in einem Satz.' },
+      { id: 's50', category: 'Immersion', type: 'satz', de: 'Was bedeutet das?', tr: 'Bu ne demek?', note: 'Sehr nützlich, wenn du vor Ort neue Wörter hörst.' },
+      { id: 's51', category: 'Verstehen', type: 'satz', de: 'Verstanden, danke.', tr: 'Anladım, teşekkür ederim.', note: 'Perfektive Form (anladım = habe verstanden), nicht anlıyorum. Schließt die Bedeutungs-Schleife nach Bu ne demek?' },
+      { id: 's52', category: 'Dank', type: 'satz', de: 'Wirklich, danke.', tr: 'Gerçekten teşekkür ederim.', note: 'Verstärktes Dankeschön — gut als Reaktion auf Aufmerksamkeit/Nachschlag.' },
+      { id: 's53', category: 'Tisch', type: 'satz', de: 'Nein, ich bin satt. Danke.', tr: 'Yok, ben tokum. Sağ ol.', note: 'Wie Firuze sagt — tokum als Alltagsform neben doydum. Höfliches Ablehnen am Tisch.' },
+      { id: 's54', category: 'Immersion', type: 'satz', de: '(Hab) sehr vermisst!', tr: 'Çok özledim!', note: 'Natürlichste Wiedersehensform — Türken sagen das ohne Objekt.' },
+      { id: 's55', category: 'Immersion', type: 'satz', de: 'Ich habe dich vermisst.', tr: 'Seni özledim.', note: 'Informelle Variante (Partner/enge Familie). Höflich: Sizi özledim.' },
+      { id: 'w1', category: 'Basics', type: 'wort', de: 'Hallo', tr: 'Merhaba', note: 'Standardgruß.' },
+      { id: 'w2', category: 'Basics', type: 'wort', de: 'mein Name', tr: 'adım', note: 'z. B. Benim adım Henning.' },
+      { id: 'w3', category: 'Basics', type: 'wort', de: 'das hier', tr: 'bunu', note: 'Objektform von bu.' },
+      { id: 'w4', category: 'Basics', type: 'wort', de: 'das da', tr: 'şunu', note: 'Objektform von şu.' },
+      { id: 'w5', category: 'Familie', type: 'wort', de: 'meine Schwiegermutter', tr: 'kayınvalidem', note: 'Nicht nur kayınvalide.' },
+      { id: 'w6', category: 'Familie', type: 'wort', de: 'Schwiegervater', tr: 'kayınpeder', note: 'Neues Familienwort.' },
+      { id: 'w7', category: 'Familie', type: 'wort', de: 'große / ältere Schwester', tr: 'abla', note: 'Sehr häufig im Familienkontext.' },
+      { id: 'w8', category: 'Tisch', type: 'wort', de: 'ich bin satt', tr: 'doydum', note: 'Kurzer Tischsatz.' },
+      { id: 'w9', category: 'Wünsche', type: 'wort', de: 'ich möchte', tr: 'istiyorum', note: 'Sehr wichtiger Kernbaustein.' },
+      { id: 'w10', category: 'Wünsche', type: 'wort', de: 'ich möchte nicht', tr: 'istemiyorum', note: 'Negation direkt mit drin.' },
+      { id: 'w11', category: 'Dank', type: 'wort', de: 'danke', tr: 'teşekkür ederim', note: 'Immer sicher.' },
+      { id: 'w12', category: 'Dank', type: 'wort', de: 'vielen Dank', tr: 'çok teşekkür ederim', note: 'Dein Zielsatz.' },
+      { id: 'w13', category: 'Dank', type: 'wort', de: 'danke dir', tr: 'sağ ol', note: 'Informell, warm.' },
+      { id: 'w14', category: 'Dank', type: 'wort', de: 'gern / bitte sehr', tr: 'rica ederim', note: 'Gute Antwort auf danke.' },
+      { id: 'w15', category: 'Fragewörter', type: 'wort', de: 'was?', tr: 'ne?', note: 'Kernfragewort.' },
+      { id: 'w16', category: 'Fragewörter', type: 'wort', de: 'wo?', tr: 'nerede?', note: 'Sehr alltagstauglich.' },
+      { id: 'w17', category: 'Fragewörter', type: 'wort', de: 'wer?', tr: 'kim?', note: 'Vor allem bei Familie.' },
+      { id: 'w18', category: 'Fragewörter', type: 'wort', de: 'wie viele?', tr: 'kaç?', note: 'Wichtig mit Zahlen.' },
+      { id: 'w19', category: 'Loben', type: 'wort', de: 'großartig', tr: 'harika', note: 'Klingt warm und natürlich.' },
+      { id: 'w20', category: 'Loben', type: 'wort', de: 'sehr lecker', tr: 'çok lezzetli', note: 'Natürliches Tischlob.' },
+      { id: 'w21', category: 'Loben', type: 'wort', de: 'wunderbar', tr: 'muhteşem', note: 'Etwas stärker, seltener.' },
+      { id: 'w22', category: 'Nuri', type: 'wort', de: 'Baby', tr: 'bebek', note: 'Für Nuri und Familie.' },
+      { id: 'w23', category: 'Verstehen', type: 'wort', de: 'ich verstehe', tr: 'anlıyorum', note: 'Schafft sofort Ruhe.' },
+      { id: 'w24', category: 'Verstehen', type: 'wort', de: 'ich verstehe nicht', tr: 'anlamıyorum', note: 'Sehr nützlich.' },
+      { id: 'w25', category: 'Gefühle', type: 'wort', de: 'ich liebe', tr: 'seviyorum', note: 'Breit einsetzbar für Personen und Dinge.' },
+      { id: 'w26', category: 'Alltag', type: 'wort', de: 'komm', tr: 'gel', note: 'Kurzer Imperativ.' },
+      { id: 'w27', category: 'Alltag', type: 'wort', de: 'setz dich', tr: 'otur', note: 'Einfacher Alltags-Imperativ.' },
+      { id: 'w28', category: 'Alltag', type: 'wort', de: 'schau', tr: 'bak', note: 'Nützlich zum Zeigen.' },
+      { id: 'w29', category: 'Familie', type: 'wort', de: 'Tante', tr: 'teyze', note: 'Für ältere weibliche Verwandte/Anrede.' },
+      { id: 'w30', category: 'Familie', type: 'wort', de: 'Onkel', tr: 'amca', note: 'Für ältere männliche Verwandte/Anrede.' },
+      { id: 'w31', category: 'Höflichkeit', type: 'wort', de: 'freut mich', tr: 'memnun oldum', note: 'Bei Vorstellen und Kennenlernen.' },
+      { id: 'w32', category: 'Survival', type: 'wort', de: 'ich lerne', tr: 'öğreniyorum', note: 'Nützlich für ehrliche Selbstauskunft.' },
+      { id: 'w33', category: 'Immersion', type: 'wort', de: 'ist geworden', tr: 'olmuş', note: 'Klingt oft natürlicher als nur güzel.' },
+      { id: 'w34', category: 'Immersion', type: 'wort', de: 'bedeuten', tr: 'demek', note: 'Hilft bei Bu ne demek?' },
+      { id: 'w35', category: 'Verstehen', type: 'wort', de: 'verstanden (habe)', tr: 'anladım', note: 'Perfektiv — nach einer Erklärung, nicht anlıyorum.' },
+      { id: 'w36', category: 'Basics', type: 'wort', de: 'wirklich', tr: 'gerçekten', note: 'Verstärker für Dank, Lob, Aussagen.' },
+      { id: 'w37', category: 'Tisch', type: 'wort', de: 'ich bin satt', tr: 'tokum', note: 'Alltagsform neben doydum — wie Firuze sagt.' },
+      { id: 'w38', category: 'Immersion', type: 'wort', de: 'ich habe vermisst', tr: 'özledim', note: 'Schlüsselwort beim Wiedersehen — Türken sagen özlemek statt „schön dich zu sehen".' },
+      { id: 'w39', category: 'Immersion', type: 'wort', de: 'vermissen', tr: 'özlemek', note: 'Grundform — Firuzes Korrektur: emotionaler Schlüsselsatz bei Familie.' }
+    ];
+
+    // ─────────────────────────────────────────────────────────────────────
+    // CONFIG — tweak behaviour without touching the app logic
+    // ─────────────────────────────────────────────────────────────────────
+    const CONFIG = {
+      tts: {
+        lang: 'tr-TR',
+        rate: 0.85,
+        autoplay: true
+      },
+      sr: {
+        again:  1 * 24 * 60 * 60 * 1000,
+        hard:   3 * 24 * 60 * 60 * 1000,
+        good:   7 * 24 * 60 * 60 * 1000,
+        easy:  14 * 24 * 60 * 60 * 1000
+      }
+    };
+
+    const stateKey = 'tarkan-trainer-progress-v3';
+    const now = () => Date.now();
+    const reviewIntervals = {
+      hard: 5 * 60 * 1000,
+      good: 18 * 60 * 60 * 1000
+    };
+
+    const defaultState = {
+      seen: [],
+      quizCorrect: 0,
+      quizTotal: 0,
+      writeCorrect: 0,
+      writeTotal: 0,
+      xp: 0,
+      category: 'Alle',
+      cardStats: {},
+      heroExpandedMobile: false
+    };
+
+    let appState = loadState();
+    let currentReview = null;
+    let currentQuiz = null;
+    let currentWrite = null;
+
+    const categories = ['Alle', 'Schwierige Karten', ...new Set(CONTENT.map(item => item.category))];
+
+    function loadState() {
+      try {
+        return { ...defaultState, ...(JSON.parse(localStorage.getItem(stateKey)) || {}) };
+      } catch {
+        return { ...defaultState };
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(stateKey, JSON.stringify(appState));
+      updateStats();
+    }
+
+    function shuffle(arr) {
+      return [...arr].sort(() => Math.random() - 0.5);
+    }
+
+    function normalize(str) {
+      return str
+        .toLocaleLowerCase('tr-TR')
+        .replace(/[’']/g, "'")
+        .replace(/[.!?,;:]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function normalizeLoose(str) {
+      return normalize(str)
+        .replace(/'/g, '')
+        .replace(/[ç]/g, 'c')
+        .replace(/[ğ]/g, 'g')
+        .replace(/[ı]/g, 'i')
+        .replace(/[ö]/g, 'o')
+        .replace(/[ş]/g, 's')
+        .replace(/[ü]/g, 'u');
+    }
+
+    function levenshtein(a, b) {
+      const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+      for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+      for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+      for (let i = 1; i <= a.length; i++) {
+        for (let j = 1; j <= b.length; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j - 1] + cost
+          );
+        }
+      }
+      return matrix[a.length][b.length];
+    }
+
+    function gradeWrittenAnswer(input, target) {
+      const exact = normalize(input);
+      const exactTarget = normalize(target);
+      if (exact === exactTarget) return { kind: 'exact' };
+      const loose = normalizeLoose(input);
+      const looseTarget = normalizeLoose(target);
+      const distance = levenshtein(loose, looseTarget);
+      if (loose === looseTarget || distance <= 2) return { kind: 'close', distance };
+      return { kind: 'wrong', distance };
+    }
+
+    function difficultCards(pool = CONTENT) {
+      return pool.filter(item => getCardStats(item.id).wrong >= 2 || getCardStats(item.id).wrong > getCardStats(item.id).correct + 1);
+    }
+
+    function filteredContent() {
+      if (appState.category === 'Alle') return CONTENT;
+      if (appState.category === 'Schwierige Karten') return difficultCards();
+      return CONTENT.filter(item => item.category === appState.category);
+    }
+
+    function getCardStats(id) {
+      return appState.cardStats[id] || { dueAt: 0, correct: 0, wrong: 0, streak: 0, lastSeen: 0 };
+    }
+
+    function updateCardStats(id, patch) {
+      appState.cardStats[id] = { ...getCardStats(id), ...patch };
+    }
+
+    function addXp(amount) {
+      appState.xp = Math.max(0, (appState.xp || 0) + amount);
+    }
+
+    function getLevelInfo() {
+      const xp = appState.xp || 0;
+      const level = Math.floor(xp / 100) + 1;
+      const currentLevelXp = xp % 100;
+      return { xp, level, currentLevelXp };
+    }
+
+    function getBadges() {
+      const seenCount = new Set(appState.seen).size;
+      const hardCount = difficultCards().length;
+      return [
+        { id: 'first-steps', icon: '🌱', title: 'Erste Schritte', unlocked: seenCount >= 5, text: '5 Karten gesehen' },
+        { id: 'table-talk', icon: '🍽️', title: 'Tisch-Türkisch', unlocked: CONTENT.filter(i => i.category === 'Tisch').every(i => getCardStats(i.id).correct > 0), text: 'alle Tischkarten einmal richtig' },
+        { id: 'writer', icon: '✍️', title: 'Saubere Hand', unlocked: appState.writeCorrect >= 10, text: '10 Schreibtreffer' },
+        { id: 'steady', icon: '🔥', title: 'Dranbleiber', unlocked: (appState.xp || 0) >= 75, text: '75 XP erreicht' },
+        { id: 'trouble-tamer', icon: '🛠️', title: 'Feinschleifer', unlocked: hardCount === 0 && seenCount >= 10, text: 'keine schwierigen Karten mehr' }
+      ];
+    }
+
+    function markSeen(id) {
+      if (!appState.seen.includes(id)) appState.seen.push(id);
+      updateCardStats(id, { lastSeen: now() });
+    }
+
+    function dueCards(pool) {
+      const current = now();
+      return pool.filter(item => getCardStats(item.id).dueAt <= current);
+    }
+
+    function pickSmartCard(pool, excludeId) {
+      const withoutExcluded = pool.filter(item => item.id !== excludeId);
+      const duePool = dueCards(withoutExcluded);
+      const source = duePool.length ? duePool : withoutExcluded;
+      const weighted = source.map(item => {
+        const stats = getCardStats(item.id);
+        let weight = 1;
+        if (!appState.seen.includes(item.id)) weight += 4;
+        weight += stats.wrong * 2;
+        weight += Math.max(0, 3 - stats.streak);
+        if (stats.dueAt <= now()) weight += 2;
+        return { item, weight };
+      });
+      const totalWeight = weighted.reduce((sum, entry) => sum + entry.weight, 0);
+      let cursor = Math.random() * totalWeight;
+      for (const entry of weighted) {
+        cursor -= entry.weight;
+        if (cursor <= 0) return entry.item;
+      }
+      return weighted[0]?.item || withoutExcluded[0] || pool[0];
+    }
+
+    function updateStats() {
+      document.getElementById('statCards').textContent = String(new Set(appState.seen).size);
+      document.getElementById('statQuiz').textContent = appState.quizTotal ? Math.round((appState.quizCorrect / appState.quizTotal) * 100) + '%' : '0%';
+      document.getElementById('statWrite').textContent = appState.writeTotal ? Math.round((appState.writeCorrect / appState.writeTotal) * 100) + '%' : '0%';
+      const levelInfo = getLevelInfo();
+      document.getElementById('statMood').textContent = `Lv${levelInfo.level} · ${levelInfo.xp} XP`;
+      const total = filteredContent().length;
+      const seenCount = filteredContent().filter(item => appState.seen.includes(item.id)).length;
+      const dueCount = dueCards(filteredContent()).length;
+      document.getElementById('progressFill').style.width = total ? (seenCount / total) * 100 + '%' : '0%';
+      document.getElementById('progressText').textContent = `${seenCount} von ${total} Karten in diesem Fokus angesehen`;
+      document.getElementById('dueText').textContent = `${dueCount} Karten gerade fällig`;
+      renderToday();
+    }
+
+    function renderCategories() {
+      const holder = document.getElementById('categoryFilters');
+      holder.innerHTML = '';
+      categories.forEach(category => {
+        const btn = document.createElement('button');
+        btn.className = 'chip' + (appState.category === category ? ' active' : '');
+        btn.textContent = category;
+        btn.onclick = () => {
+          appState.category = category;
+          saveState();
+          renderCategories();
+          nextReview();
+          nextQuiz();
+          nextWrite();
+        };
+        holder.appendChild(btn);
+      });
+    }
+
+    function updateHeroVisibility(activeTab) {
+      const hero = document.getElementById('heroSection');
+      const toggleBtn = document.getElementById('heroToggleBtn');
+      const isMobile = window.innerWidth <= 860;
+      const showHero = !isMobile || activeTab === 'today';
+      hero.classList.toggle('is-hidden-mobile', !showHero);
+      hero.classList.toggle('is-collapsed', isMobile && showHero && !appState.heroExpandedMobile);
+      toggleBtn.textContent = hero.classList.contains('is-collapsed') ? 'Mehr anzeigen' : 'Einklappen';
+    }
+
+    function openTab(tabId) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabId));
+      document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === tabId));
+      updateHeroVisibility(tabId);
+    }
+
+    function renderBadges() {
+      const grid = document.getElementById('badgeGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      getBadges().forEach(badge => {
+        const el = document.createElement('div');
+        el.className = `badge${badge.unlocked ? '' : ' locked'}`;
+        el.innerHTML = `<div class="badge-title">${badge.icon} <span>${badge.title}</span></div><div class="tiny">${badge.text}</div>`;
+        grid.appendChild(el);
+      });
+    }
+
+    function renderToday() {
+      const due = dueCards(CONTENT).slice(0, 12);
+      const hardCount = difficultCards().length;
+      const summary = document.getElementById('todaySummary');
+      const list = document.getElementById('todayDueList');
+      if (!summary || !list) return;
+      summary.textContent = due.length
+        ? `${due.length} Karten sind gerade fällig. ${hardCount ? hardCount + ' davon sind eher schwierig.' : 'Fang mit den schweren oder lange nicht gesehenen Sätzen an.'}`
+        : hardCount
+          ? `Gerade ist nichts dringend fällig — aber ${hardCount} Karten sind noch wacklig. Perfekt für eine kurze Fokus-Runde.`
+          : 'Gerade ist nichts dringend fällig — perfekter Moment für 2–3 lockere Wiederholungen.';
+      list.innerHTML = '';
+      if (!due.length) {
+        const empty = document.createElement('div');
+        empty.className = 'entry';
+        empty.innerHTML = '<strong>Alles ruhig ✨</strong><small>Du bist gerade gut im Takt. Nimm einfach eine Kategorie und mach 2–3 Karten locker durch.</small>';
+        list.appendChild(empty);
+        renderBadges();
+        return;
+      }
+      due.forEach(item => {
+        const stats = getCardStats(item.id);
+        const el = document.createElement('div');
+        el.className = 'entry';
+        const wobble = stats.wrong >= 2 ? ' · schwierig' : '';
+        el.innerHTML = `<strong>${item.de}</strong><small>${item.tr}<br>${item.category} · Streak ${stats.streak || 0}${wobble}</small>`;
+        const row = document.createElement('div');
+        row.className = 'helper-bar';
+        const speakBtn = document.createElement('button');
+        speakBtn.className = 'ghost';
+        speakBtn.textContent = '🔊';
+        speakBtn.onclick = () => speakTurkish(item.tr);
+        const practiceBtn = document.createElement('button');
+        practiceBtn.className = 'ghost';
+        practiceBtn.textContent = 'Üben';
+        practiceBtn.onclick = () => {
+          currentReview = item;
+          document.getElementById('reviewAnswer').classList.remove('visible');
+          document.getElementById('reviewGradeRow').style.display = 'none';
+          document.getElementById('reviewCategory').textContent = currentReview.category;
+          document.getElementById('reviewType').textContent = currentReview.type === 'satz' ? 'Satz' : 'Wort';
+          document.getElementById('reviewPrompt').textContent = currentReview.de;
+          document.getElementById('reviewAnswer').innerHTML = `<strong>${currentReview.tr}</strong><br><span class="tiny">${currentReview.note}</span>`;
+          markSeen(currentReview.id);
+          saveState();
+          openTab('review');
+        };
+        row.appendChild(speakBtn);
+        row.appendChild(practiceBtn);
+        el.appendChild(row);
+        list.appendChild(el);
+      });
+      renderBadges();
+    }
+
+    function nextReview() {
+      const pool = filteredContent();
+      currentReview = pickSmartCard(pool, currentReview?.id);
+      const answer = document.getElementById('reviewAnswer');
+      answer.classList.remove('visible');
+      document.getElementById('reviewGradeRow').style.display = 'none';
+      document.getElementById('reviewCategory').textContent = currentReview.category;
+      document.getElementById('reviewType').textContent = currentReview.type === 'satz' ? 'Satz' : 'Wort';
+      document.getElementById('reviewPrompt').textContent = currentReview.de;
+      answer.innerHTML = `<strong>${currentReview.tr}</strong><br><span class="tiny">${currentReview.note}</span>`;
+      markSeen(currentReview.id);
+      saveState();
+    }
+
+    function showReviewAnswer() {
+      document.getElementById('reviewAnswer').classList.add('visible');
+      document.getElementById('reviewGradeRow').style.display = 'flex';
+    }
+
+    function gradeReview(result) {
+      const stats = getCardStats(currentReview.id);
+      if (result === 'hard') {
+        updateCardStats(currentReview.id, {
+          wrong: stats.wrong + 1,
+          streak: 0,
+          dueAt: now() + reviewIntervals.hard,
+          lastSeen: now()
+        });
+        addXp(1);
+      } else {
+        updateCardStats(currentReview.id, {
+          correct: stats.correct + 1,
+          streak: stats.streak + 1,
+          dueAt: now() + reviewIntervals.good * Math.max(1, stats.streak + 1),
+          lastSeen: now()
+        });
+        addXp(4);
+      }
+      saveState();
+      nextReview();
+    }
+
+    function buildQuizQuestion() {
+      const pool = filteredContent();
+      const item = pickSmartCard(pool);
+      const distractors = shuffle(CONTENT.filter(entry => entry.id !== item.id)).slice(0, 3).map(entry => entry.tr);
+      const options = shuffle([item.tr, ...distractors]);
+      return { item, options };
+    }
+
+    function nextQuiz() {
+      currentQuiz = buildQuizQuestion();
+      document.getElementById('quizQuestion').textContent = `Was heißt auf Türkisch: „${currentQuiz.item.de}“?`;
+      const wrap = document.getElementById('quizOptions');
+      const feedback = document.getElementById('quizFeedback');
+      feedback.textContent = '';
+      feedback.className = 'feedback';
+      wrap.innerHTML = '';
+      currentQuiz.options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = option;
+        btn.onclick = () => {
+          const buttons = [...wrap.querySelectorAll('button')];
+          buttons.forEach(b => b.disabled = true);
+          appState.quizTotal += 1;
+          const stats = getCardStats(currentQuiz.item.id);
+          if (option === currentQuiz.item.tr) {
+            appState.quizCorrect += 1;
+            addXp(5);
+            updateCardStats(currentQuiz.item.id, {
+              correct: stats.correct + 1,
+              streak: stats.streak + 1,
+              dueAt: now() + reviewIntervals.good,
+              lastSeen: now()
+            });
+            btn.classList.add('correct');
+            feedback.textContent = 'Ja — genau richtig. Harika. +5 XP';
+            feedback.classList.add('good');
+          } else {
+            addXp(1);
+            updateCardStats(currentQuiz.item.id, {
+              wrong: stats.wrong + 1,
+              streak: 0,
+              dueAt: now() + reviewIntervals.hard,
+              lastSeen: now()
+            });
+            btn.classList.add('wrong');
+            buttons.find(b => b.textContent === currentQuiz.item.tr)?.classList.add('correct');
+            feedback.textContent = `Fast — richtig wäre: ${currentQuiz.item.tr}`;
+            feedback.classList.add('bad');
+          }
+          saveState();
+        };
+        wrap.appendChild(btn);
+      });
+    }
+
+    function buildWriteQuestion() {
+      const pool = filteredContent().filter(item => item.type === 'satz');
+      return pickSmartCard(pool, currentWrite?.id);
+    }
+
+    function nextWrite() {
+      currentWrite = buildWriteQuestion();
+      document.getElementById('writeQuestion').textContent = `Übersetze: „${currentWrite.de}“`;
+      document.getElementById('writeInput').value = '';
+      const feedback = document.getElementById('writeFeedback');
+      feedback.textContent = '';
+      feedback.className = 'feedback';
+    }
+
+    function checkWrite() {
+      const value = document.getElementById('writeInput').value;
+      const feedback = document.getElementById('writeFeedback');
+      const stats = getCardStats(currentWrite.id);
+      const result = gradeWrittenAnswer(value, currentWrite.tr);
+      appState.writeTotal += 1;
+      if (result.kind === 'exact') {
+        appState.writeCorrect += 1;
+        addXp(7);
+        updateCardStats(currentWrite.id, {
+          correct: stats.correct + 1,
+          streak: stats.streak + 1,
+          dueAt: now() + reviewIntervals.good,
+          lastSeen: now()
+        });
+        feedback.textContent = 'Ja — das sitzt. +7 XP';
+        feedback.className = 'feedback good';
+      } else if (result.kind === 'close') {
+        appState.writeCorrect += 1;
+        addXp(5);
+        updateCardStats(currentWrite.id, {
+          correct: stats.correct + 1,
+          streak: stats.streak + 1,
+          dueAt: now() + reviewIntervals.hard * 3,
+          lastSeen: now()
+        });
+        feedback.textContent = `Fast perfekt — ich zähle das als richtig. Zielschreibweise: ${currentWrite.tr}`;
+        feedback.className = 'feedback good';
+      } else {
+        addXp(1);
+        updateCardStats(currentWrite.id, {
+          wrong: stats.wrong + 1,
+          streak: 0,
+          dueAt: now() + reviewIntervals.hard,
+          lastSeen: now()
+        });
+        feedback.textContent = `Noch nicht ganz. Ziel: ${currentWrite.tr}`;
+        feedback.className = 'feedback bad';
+      }
+      saveState();
+    }
+
+    function showWriteAnswer() {
+      const feedback = document.getElementById('writeFeedback');
+      feedback.textContent = `Lösung: ${currentWrite.tr}`;
+      feedback.className = 'feedback';
+    }
+
+    function exportProgress() {
+      const textarea = document.getElementById('transferData');
+      const feedback = document.getElementById('transferFeedback');
+      const payload = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        state: appState
+      };
+      textarea.value = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+      textarea.select();
+      textarea.setSelectionRange(0, textarea.value.length);
+      feedback.textContent = 'Export erstellt. Du kannst ihn kopieren und woanders wieder importieren.';
+      feedback.className = 'feedback good';
+    }
+
+    function importProgress() {
+      const textarea = document.getElementById('transferData');
+      const feedback = document.getElementById('transferFeedback');
+      try {
+        const raw = textarea.value.trim();
+        if (!raw) throw new Error('leer');
+        const parsed = JSON.parse(decodeURIComponent(escape(atob(raw))));
+        if (!parsed.state || typeof parsed.state !== 'object') throw new Error('invalid');
+        appState = { ...defaultState, ...parsed.state };
+        saveState();
+        renderCategories();
+        renderLibrary();
+        renderToday();
+        nextReview();
+        nextQuiz();
+        nextWrite();
+        const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'today';
+        updateHeroVisibility(activeTab);
+        feedback.textContent = 'Import erfolgreich geladen.';
+        feedback.className = 'feedback good';
+      } catch {
+        feedback.textContent = 'Import konnte nicht gelesen werden.';
+        feedback.className = 'feedback bad';
+      }
+    }
+
+    function syncThemeColor() {
+      const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      let themeMeta = document.querySelector('meta[name="theme-color"][data-dynamic="true"]');
+      if (!themeMeta) {
+        themeMeta = document.createElement('meta');
+        themeMeta.name = 'theme-color';
+        themeMeta.dataset.dynamic = 'true';
+        document.head.appendChild(themeMeta);
+      }
+      themeMeta.content = isDark ? '#221917' : '#e6532d';
+    }
+
+    function speakTurkish(text) {
+      if (!('speechSynthesis' in window)) {
+        alert('Dein Browser unterstützt leider keine Sprachausgabe.');
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'tr-TR';
+      utterance.rate = 0.92;
+      utterance.pitch = 1;
+      const voices = window.speechSynthesis.getVoices();
+      const turkishVoice = voices.find(voice => voice.lang && voice.lang.toLowerCase().startsWith('tr'));
+      if (turkishVoice) utterance.voice = turkishVoice;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function renderLibrary() {
+      const sentenceList = document.getElementById('sentenceList');
+      const wordList = document.getElementById('wordList');
+      sentenceList.innerHTML = '';
+      wordList.innerHTML = '';
+
+      CONTENT.filter(item => item.type === 'satz').forEach(item => {
+        const el = document.createElement('div');
+        el.className = 'entry';
+        el.innerHTML = `<strong>${item.tr}</strong><small>${item.de}<br>${item.category} · ${item.note}</small>`;
+        const playBtn = document.createElement('button');
+        playBtn.className = 'ghost';
+        playBtn.style.marginTop = '10px';
+        playBtn.textContent = '🔊 Anhören';
+        playBtn.onclick = () => speakTurkish(item.tr);
+        el.appendChild(playBtn);
+        sentenceList.appendChild(el);
+      });
+
+      CONTENT.filter(item => item.type === 'wort').forEach(item => {
+        const el = document.createElement('div');
+        el.className = 'entry';
+        el.innerHTML = `<strong>${item.tr}</strong><small>${item.de}<br>${item.category} · ${item.note}</small>`;
+        const playBtn = document.createElement('button');
+        playBtn.className = 'ghost';
+        playBtn.style.marginTop = '10px';
+        playBtn.textContent = '🔊 Anhören';
+        playBtn.onclick = () => speakTurkish(item.tr);
+        el.appendChild(playBtn);
+        wordList.appendChild(el);
+      });
+    }
+
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => openTab(tab.dataset.tab));
+    });
+
+    document.getElementById('showAnswerBtn').addEventListener('click', showReviewAnswer);
+    document.getElementById('nextCardBtn').addEventListener('click', nextReview);
+    document.getElementById('heroToggleBtn').addEventListener('click', () => {
+      appState.heroExpandedMobile = !appState.heroExpandedMobile;
+      saveState();
+      const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'today';
+      updateHeroVisibility(activeTab);
+    });
+    document.getElementById('exportBtn').addEventListener('click', exportProgress);
+    document.getElementById('importBtn').addEventListener('click', importProgress);
+    document.getElementById('startDueBtn').addEventListener('click', () => {
+      const due = dueCards(CONTENT);
+      if (due.length) {
+        currentReview = due[0];
+        document.getElementById('reviewAnswer').classList.remove('visible');
+        document.getElementById('reviewGradeRow').style.display = 'none';
+        document.getElementById('reviewCategory').textContent = currentReview.category;
+        document.getElementById('reviewType').textContent = currentReview.type === 'satz' ? 'Satz' : 'Wort';
+        document.getElementById('reviewPrompt').textContent = currentReview.de;
+        document.getElementById('reviewAnswer').innerHTML = `<strong>${currentReview.tr}</strong><br><span class="tiny">${currentReview.note}</span>`;
+        markSeen(currentReview.id);
+        saveState();
+      } else {
+        nextReview();
+      }
+      openTab('review');
+    });
+    document.getElementById('refreshTodayBtn').addEventListener('click', renderToday);
+    document.getElementById('gradeHardBtn').addEventListener('click', () => gradeReview('hard'));
+    document.getElementById('gradeEasyBtn').addEventListener('click', () => gradeReview('easy'));
+    document.getElementById('speakReviewBtn').addEventListener('click', () => currentReview && speakTurkish(currentReview.tr));
+    document.getElementById('nextQuizBtn').addEventListener('click', nextQuiz);
+    document.getElementById('checkWriteBtn').addEventListener('click', checkWrite);
+    document.getElementById('showWriteAnswerBtn').addEventListener('click', showWriteAnswer);
+    document.getElementById('speakWriteBtn').addEventListener('click', () => currentWrite && speakTurkish(currentWrite.tr));
+    document.getElementById('nextWriteBtn').addEventListener('click', nextWrite);
+    document.getElementById('writeInput').addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') checkWrite();
+    });
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {};
+      window.speechSynthesis.getVoices();
+    }
+
+    syncThemeColor();
+    if (window.matchMedia) {
+      const darkMedia = window.matchMedia('(prefers-color-scheme: dark)');
+      if (darkMedia.addEventListener) darkMedia.addEventListener('change', syncThemeColor);
+      else if (darkMedia.addListener) darkMedia.addListener(syncThemeColor);
+    }
+
+    renderCategories();
+    renderLibrary();
+    nextReview();
+    nextQuiz();
+    nextWrite();
+    updateStats();
+    openTab('today');
+    window.addEventListener('resize', () => {
+      const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'today';
+      updateHeroVisibility(activeTab);
+    });
+  </script>
+</body>
+</html>
