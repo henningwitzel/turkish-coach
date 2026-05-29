@@ -32,9 +32,9 @@ case "$MODE" in
   remote)
     if $FRESH; then
       echo "Waiting for Claude to initialize..."
-      sleep 6
+      sleep 10
     fi
-    tmux send-keys -t "$SESSION" "/remote-control" Enter
+    tmux send-keys -t "${SESSION}:0.0" "/remote-control" Enter
     echo "Remote control activated — open the Claude App to connect."
     ;;
 esac
