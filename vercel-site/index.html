@@ -352,7 +352,7 @@
     button.ghost { background: var(--tag-bg); color: var(--text); }
 
     #reviewGradeRow {
-      display: grid !important;
+      display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
@@ -569,7 +569,7 @@
 
       /* Panels */
       .panel { padding: 0; scroll-margin-top: 12px; }
-      .panel-title { margin-bottom: 12px; padding: 0 2px; }
+      .panel-title { margin-bottom: 12px; padding: 4px 2px 0; }
       .panel-title h2 { font-size: 1.8rem; letter-spacing: -0.02em; }
       .panel-title p { font-size: 0.875rem; margin-top: 4px; }
       .card { padding: 16px; border-radius: 20px; }
@@ -642,7 +642,7 @@
       from { opacity: 0; transform: translateY(6px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .panel.active {
+    body.loaded .panel.active {
       animation: panelIn 180ms var(--ease-out-expo) both;
     }
 
@@ -1275,7 +1275,7 @@
 
     function showReviewAnswer() {
       document.getElementById('reviewAnswer').classList.add('visible');
-      document.getElementById('reviewGradeRow').style.display = 'flex';
+      document.getElementById('reviewGradeRow').style.display = 'grid';
     }
 
     function gradeReview(result) {
@@ -1591,6 +1591,7 @@
     nextWrite();
     updateStats();
     openTab('today');
+    requestAnimationFrame(() => document.body.classList.add('loaded'));
     window.addEventListener('resize', () => {
       const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'today';
       updateHeroVisibility(activeTab);
