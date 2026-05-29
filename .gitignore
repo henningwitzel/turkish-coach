@@ -1,2 +1,7 @@
 .DS_Store
 *.swp
+
+# Personal data — each user keeps their own locally, not in the repo
+USER.md
+LESSON_TRACKER.md
+memory/20*.md

@@ -21,7 +21,7 @@ Tarkan teaches through short daily drills, practical family vocabulary, and tigh
 
 ---
 
-## Setup (5 minutes)
+## Setup
 
 ### 1. Clone the repo
 
@@ -30,37 +30,15 @@ git clone <repo-url> ~/Development/Turkish-Coach
 cd ~/Development/Turkish-Coach
 ```
 
-### 2. Set your personal context
-
-Copy the template files and fill them in:
-
-```bash
-cp templates/USER.md USER.md
-cp templates/LESSON_TRACKER.md LESSON_TRACKER.md
-```
-
-Edit `USER.md` — replace all `[BRACKETS]` with your actual information:
-- Your name
-- Your native language (used for all explanations — Italian, German, English, etc.)
-- Why you're learning Turkish (your partner's name, family context)
-- Your trip date if you have one
-
-Edit `LESSON_TRACKER.md` — fill in the **Starting Level** section at the top. This is important: write down actual words and phrases you already know (from Duolingo or wherever), what you can say, what you struggle with. Tarkan reads this to calibrate — the more specific, the better. Leave the curriculum section as-is.
-
-### 3. Clear the example memory files
-
-```bash
-rm -f memory/2026-*.md
-echo "" > memory/MEMORY.md
-```
-
-### 4. Start the session
+### 2. Start Claude and let Tarkan set you up
 
 ```bash
 ./start.sh
 ```
 
-This starts a tmux session named `tarkan` with `claude` running. Tarkan reads your files and opens with the first lesson automatically.
+On first run, Tarkan detects that the project hasn't been configured yet and walks you through setup in a short conversation — your name, language, partner's family context, current Turkish level. He writes everything into the config files himself.
+
+That's it. After setup, your first lesson starts automatically.
 
 **Remote access (Claude App on your phone):**
 ```bash
@@ -84,12 +62,10 @@ Then open the Claude App and tap the Remote Control option.
 Turkish-Coach/
 ├── CLAUDE.md           — Session instructions for Claude (don't edit)
 ├── SOUL.md             — Tarkan's personality and teaching approach (don't edit)
-├── USER.md             — Your personal profile ← fill this in
-├── LESSON_TRACKER.md   — Your lesson state and word list ← auto-updated by Tarkan
+├── USER.md             — Your personal profile (filled in during setup)
+├── LESSON_TRACKER.md   — Your lesson state and word list (auto-updated by Tarkan)
 ├── start.sh            — Session launcher
-├── templates/
-│   ├── USER.md         — Template for your profile
-│   └── LESSON_TRACKER.md — Clean starting tracker
+├── templates/          — Source templates (used by setup, or for manual editing)
 └── memory/
     ├── MEMORY.md       — Session note index (auto-updated)
     └── YYYY-MM-DD.md   — Session notes (auto-written by Tarkan)
