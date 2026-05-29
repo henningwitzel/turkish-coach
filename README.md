@@ -26,7 +26,7 @@ Tarkan teaches through short daily drills, practical family vocabulary, and tigh
 ### 1. Clone the repo
 
 ```bash
-git clone <repo-url> ~/Development/Turkish-Coach
+git clone https://github.com/henningwitzel/turkish-coach ~/Development/Turkish-Coach
 cd ~/Development/Turkish-Coach
 ```
 
