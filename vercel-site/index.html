@@ -1264,7 +1264,7 @@
 
     function renderCategories() {
       const holder = document.getElementById('categoryFilters');
-      holder.innerHTML = '';
+      if (!holder) return;
       categories.forEach(category => {
         const btn = document.createElement('button');
         btn.className = 'chip' + (appState.category === category ? ' active' : '');
@@ -1676,14 +1676,9 @@
         if (!parsed.state || typeof parsed.state !== 'object') throw new Error('invalid');
         appState = { ...defaultState, ...parsed.state };
         saveState();
-        renderCategories();
         renderLibrary();
-        renderToday();
-        nextReview();
-        nextQuiz();
-        nextWrite();
-        const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'today';
-        updateHeroVisibility(activeTab);
+        updateStats();
+        renderPracticeHome();
         feedback.textContent = 'Import erfolgreich geladen.';
         feedback.className = 'feedback good';
       } catch {
