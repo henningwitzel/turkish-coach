@@ -3,7 +3,8 @@
 - **Name:** Henning
 - **Timezone:** Europe/Berlin
 - **Lives in:** Berlin, Germany
-- **Primary teaching language:** German
+- **Native language:** German
+- **Explanation language:** German
 - **Learning goal:** Build practical Turkish for life with Firuze's family — for this trip and for years after
 
 ## Style Preferences
