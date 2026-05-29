@@ -657,7 +657,7 @@
               <button class="primary" id="showAnswerBtn">Antwort zeigen</button>
               <button class="secondary" id="nextCardBtn">Nächste Karte</button>
             </div>
-            <div class="actions" id="reviewGradeRow" style="margin-top:10px; display:none; flex-wrap:wrap; gap:8px;">
+            <div class="actions" id="reviewGradeRow" style="margin-top:10px; display:none; flex-wrap:wrap; gap:8px; width:100%;">
               <button class="ghost" id="gradeAgainBtn" style="flex:1; min-width:80px;">🔴 Nochmal</button>
               <button class="ghost" id="gradeHardBtn" style="flex:1; min-width:80px;">🟡 Schwer</button>
               <button class="ghost" id="gradeGoodBtn" style="flex:1; min-width:80px;">🟢 Gut</button>
@@ -1179,15 +1179,16 @@
     function gradeReview(result) {
       const stats = getCardStats(currentReview.id);
       const xpMap = { again: 0, hard: 5, good: 10, easy: 15 };
+      const interval = reviewIntervals[result] ?? reviewIntervals.hard;
       const isWrong = result === 'again';
       updateCardStats(currentReview.id, {
         correct: isWrong ? stats.correct : stats.correct + 1,
         wrong: isWrong ? stats.wrong + 1 : stats.wrong,
         streak: isWrong ? 0 : stats.streak + 1,
-        dueAt: now() + reviewIntervals[result],
+        dueAt: now() + interval,
         lastSeen: now()
       });
-      addXp(xpMap[result]);
+      addXp(xpMap[result] ?? 0);
       saveState();
       nextReview();
     }
