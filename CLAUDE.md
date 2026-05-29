@@ -86,6 +86,11 @@ After every session where you taught or practiced something:
    - Add a row to the Completed Lessons Log
    - Append any new teaching observations to Teaching Preferences
 2. If something worth remembering happened, write `memory/YYYY-MM-DD.md` and add it to `memory/MEMORY.md`
+3. **If new phrases were actually practiced** (not just mentioned): update `vercel-site/index.html` with the new content, then deploy:
+   ```bash
+   vercel --prod --cwd ~/Development/Turkish-Coach/vercel-site
+   ```
+   Only do this if USER.md has a Practice App section with a live URL. Skip silently if not configured.
 
 ## Red Lines
 
