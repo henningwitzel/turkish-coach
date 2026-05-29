@@ -657,9 +657,11 @@
               <button class="primary" id="showAnswerBtn">Antwort zeigen</button>
               <button class="secondary" id="nextCardBtn">Nächste Karte</button>
             </div>
-            <div class="actions" id="reviewGradeRow" style="margin-top:10px; display:none;">
-              <button class="ghost" id="gradeHardBtn">Nochmal üben</button>
-              <button class="ghost" id="gradeEasyBtn">Saß gut</button>
+            <div class="actions" id="reviewGradeRow" style="margin-top:10px; display:none; flex-wrap:wrap; gap:8px;">
+              <button class="ghost" id="gradeAgainBtn" style="flex:1; min-width:80px;">🔴 Nochmal</button>
+              <button class="ghost" id="gradeHardBtn" style="flex:1; min-width:80px;">🟡 Schwer</button>
+              <button class="ghost" id="gradeGoodBtn" style="flex:1; min-width:80px;">🟢 Gut</button>
+              <button class="ghost" id="gradeEasyBtn" style="flex:1; min-width:80px;">⚡ Einfach</button>
             </div>
           </div>
         </div>
@@ -877,12 +879,9 @@
       }
     };
 
-    const stateKey = 'tarkan-trainer-progress-v3';
+    const stateKey = 'tarkan-trainer-progress-v4';
     const now = () => Date.now();
-    const reviewIntervals = {
-      hard: 5 * 60 * 1000,
-      good: 18 * 60 * 60 * 1000
-    };
+    const reviewIntervals = CONFIG.sr;
 
     const defaultState = {
       seen: [],
@@ -1179,23 +1178,16 @@
 
     function gradeReview(result) {
       const stats = getCardStats(currentReview.id);
-      if (result === 'hard') {
-        updateCardStats(currentReview.id, {
-          wrong: stats.wrong + 1,
-          streak: 0,
-          dueAt: now() + reviewIntervals.hard,
-          lastSeen: now()
-        });
-        addXp(1);
-      } else {
-        updateCardStats(currentReview.id, {
-          correct: stats.correct + 1,
-          streak: stats.streak + 1,
-          dueAt: now() + reviewIntervals.good * Math.max(1, stats.streak + 1),
-          lastSeen: now()
-        });
-        addXp(4);
-      }
+      const xpMap = { again: 0, hard: 5, good: 10, easy: 15 };
+      const isWrong = result === 'again';
+      updateCardStats(currentReview.id, {
+        correct: isWrong ? stats.correct : stats.correct + 1,
+        wrong: isWrong ? stats.wrong + 1 : stats.wrong,
+        streak: isWrong ? 0 : stats.streak + 1,
+        dueAt: now() + reviewIntervals[result],
+        lastSeen: now()
+      });
+      addXp(xpMap[result]);
       saveState();
       nextReview();
     }
@@ -1293,7 +1285,7 @@
         updateCardStats(currentWrite.id, {
           correct: stats.correct + 1,
           streak: stats.streak + 1,
-          dueAt: now() + reviewIntervals.hard * 3,
+          dueAt: now() + reviewIntervals.hard,
           lastSeen: now()
         });
         feedback.textContent = `Fast perfekt — ich zähle das als richtig. Zielschreibweise: ${currentWrite.tr}`;
@@ -1452,7 +1444,9 @@
       openTab('review');
     });
     document.getElementById('refreshTodayBtn').addEventListener('click', renderToday);
+    document.getElementById('gradeAgainBtn').addEventListener('click', () => gradeReview('again'));
     document.getElementById('gradeHardBtn').addEventListener('click', () => gradeReview('hard'));
+    document.getElementById('gradeGoodBtn').addEventListener('click', () => gradeReview('good'));
     document.getElementById('gradeEasyBtn').addEventListener('click', () => gradeReview('easy'));
     document.getElementById('speakReviewBtn').addEventListener('click', () => currentReview && speakTurkish(currentReview.tr));
     document.getElementById('nextQuizBtn').addEventListener('click', nextQuiz);
