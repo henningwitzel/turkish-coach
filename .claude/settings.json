@@ -2,6 +2,16 @@
   "model": "claude-opus-4-7",
   "hooks": {
     "PreCompact": [],
-    "Stop": []
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"systemMessage\": \"Session-Ende: Hast du LESSON_TRACKER.md aktualisiert? (neue Wörter in der Wortliste, Zeile im Completed Lessons Log, Teaching Preferences falls nötig). Hast du memory/YYYY-MM-DD.md geschrieben und in memory/MEMORY.md eingetragen? Falls nicht — tu es jetzt, bevor die Session endet.\"}'",
+            "statusMessage": "Prüfe ob Session-Updates geschrieben wurden..."
+          }
+        ]
+      }
+    ]
   }
 }
