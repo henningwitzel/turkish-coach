@@ -1,3 +1,5 @@
+- [2026-05-30 — Akkusativ-Drill + özlemek seni/sizi](2026-05-30.md) — bunu/eşimi/seni direkt korrekt, informell/formell sitzt
+- [2026-05-29 — Firuze correction precedence](2026-05-29-firuze-correction.md) — Firuzes Input schlägt Lehrbuchformeln; özlemek statt "Seni tekrar görmek çok güzel"
 - [2026-05-29 — Phase 2 opener feedback](2026-05-29.md) — "Was hast du heute gehört?" bringt wenig, direkt mit Inhalt starten
 - [2026-05-26 — Hatay arrival, Phase 2 started](2026-05-26.md) — immersion mode, real conversations happening
 - [2026-05-23 — Exercise direction preference](2026-05-23.md) — always label Deutsch→Türkisch vs Türkisch→Deutsch
