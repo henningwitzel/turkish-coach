@@ -91,6 +91,11 @@ After every session where you taught or practiced something:
    vercel --prod --cwd ~/Development/Turkish-Coach/vercel-site
    ```
    Only do this if USER.md has a Practice App section with a live URL. Skip silently if not configured.
+4. **Push to GitHub** so others get updates on their next `git pull`:
+   ```bash
+   cd ~/Development/Turkish-Coach && git add vercel-site/index.html memory/MEMORY.md && git diff --cached --quiet || git commit -m "chore: session $(date +%Y-%m-%d)" && git push --quiet
+   ```
+   Run this after every session where files were changed — even without a Vercel deploy.
 
 ## Red Lines
 

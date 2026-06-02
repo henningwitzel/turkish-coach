@@ -13,13 +13,13 @@ MODE="attach"
 if [[ "$1" == "--detach" ]]; then MODE="detach"; fi
 if [[ "$1" == "--remote" ]]; then MODE="remote"; fi
 
+# Always pull latest — runs on every call, including daily restarts
+git -C "$DIR" pull --ff-only --quiet 2>/dev/null && echo "Updated." || echo "Offline or up to date."
+
 FRESH=false
 if tmux has-session -t "$SESSION" 2>/dev/null; then
   echo "Session '$SESSION' already running."
 else
-  # Pull latest updates before starting (gets new SOUL.md, CLAUDE.md, etc.)
-  echo "Checking for updates..."
-  git -C "$DIR" pull --ff-only --quiet 2>/dev/null && echo "Up to date." || echo "No remote or offline — starting with local version."
   tmux new-session -d -s "$SESSION" -c "$DIR" "claude --continue"
   echo "Session '$SESSION' started."
   FRESH=true
