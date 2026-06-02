@@ -38,6 +38,9 @@ case "$MODE" in
       sleep 10
     fi
     tmux send-keys -t "${SESSION}:0.0" "/remote-control" Enter
+    # /remote-control opens an interactive menu — send Enter to select "Continue"
+    sleep 3
+    tmux send-keys -t "${SESSION}:0.0" "" Enter
     echo "Remote control activated — open the Claude App to connect."
     ;;
 esac
