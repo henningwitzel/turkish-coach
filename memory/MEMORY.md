@@ -1,3 +1,6 @@
+- [2026-06-02 — gördüm + spontane Dativ-Bildung "Aferin bana"](2026-06-02.md) — drittes -dim-Verb, Possessiv+Akkusativ, Akk/Dat-System wird sichtbar
+- [2026-06-01 — -dim past tense bridge via özledim/anladım](2026-06-01.md) — yedim/içtim eingeführt; Sonntags-Plan (neuer Stoff = Festigungs-Vehikel) funktioniert
+- [2026-05-31 — Sunday review, Henning calls for consolidation](2026-05-31.md) — Wochenbilanz Phase 2; Akkusativ-Pronomen + özlemek-Stamm noch wackelig; Plan: ab 01.06 neuer Stoff als Festigungs-Vehikel
 - [2026-05-30 — Akkusativ-Drill + özlemek seni/sizi](2026-05-30.md) — bunu/eşimi/seni direkt korrekt, informell/formell sitzt
 - [2026-05-29 — Firuze correction precedence](2026-05-29-firuze-correction.md) — Firuzes Input schlägt Lehrbuchformeln; özlemek statt "Seni tekrar görmek çok güzel"
 - [2026-05-29 — Phase 2 opener feedback](2026-05-29.md) — "Was hast du heute gehört?" bringt wenig, direkt mit Inhalt starten
