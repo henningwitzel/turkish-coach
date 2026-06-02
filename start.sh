@@ -17,6 +17,9 @@ FRESH=false
 if tmux has-session -t "$SESSION" 2>/dev/null; then
   echo "Session '$SESSION' already running."
 else
+  # Pull latest updates before starting (gets new SOUL.md, CLAUDE.md, etc.)
+  echo "Checking for updates..."
+  git -C "$DIR" pull --ff-only --quiet 2>/dev/null && echo "Up to date." || echo "No remote or offline — starting with local version."
   tmux new-session -d -s "$SESSION" -c "$DIR" "claude --continue"
   echo "Session '$SESSION' started."
   FRESH=true
