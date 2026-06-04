@@ -1,3 +1,5 @@
+- [2026-06-04 — söyle + Bunu bana söyle (zwei Endungen, ein Satz)](2026-06-04.md) — Synthese-Satz funktioniert; bei mehreren Endungen verlangsamen statt parallelisieren
+- [2026-06-03 — Keine Grammatik-Begriffe — "wen/wohin"-Faustregel](2026-06-03.md) — Henning kann mit Akkusativ/Dativ/Imperativ nichts anfangen; ab jetzt nur funktionale Fragen
 - [2026-06-02 — gördüm + spontane Dativ-Bildung "Aferin bana"](2026-06-02.md) — drittes -dim-Verb, Possessiv+Akkusativ, Akk/Dat-System wird sichtbar
 - [2026-06-01 — -dim past tense bridge via özledim/anladım](2026-06-01.md) — yedim/içtim eingeführt; Sonntags-Plan (neuer Stoff = Festigungs-Vehikel) funktioniert
 - [2026-05-31 — Sunday review, Henning calls for consolidation](2026-05-31.md) — Wochenbilanz Phase 2; Akkusativ-Pronomen + özlemek-Stamm noch wackelig; Plan: ab 01.06 neuer Stoff als Festigungs-Vehikel
