@@ -1,3 +1,4 @@
+- [2026-06-05 — Phase-2-Struktur erste volle Session](2026-06-05.md) — Wiederholung + 3 Drills + 2 Mini-Szenen; Café-Bestellung und Smalltalk als zusammenhängende Produktion
 - [2026-06-04 — söyle + Bunu bana söyle (zwei Endungen, ein Satz)](2026-06-04.md) — Synthese-Satz funktioniert; bei mehreren Endungen verlangsamen statt parallelisieren
 - [2026-06-03 — Keine Grammatik-Begriffe — "wen/wohin"-Faustregel](2026-06-03.md) — Henning kann mit Akkusativ/Dativ/Imperativ nichts anfangen; ab jetzt nur funktionale Fragen
 - [2026-06-02 — gördüm + spontane Dativ-Bildung "Aferin bana"](2026-06-02.md) — drittes -dim-Verb, Possessiv+Akkusativ, Akk/Dat-System wird sichtbar
